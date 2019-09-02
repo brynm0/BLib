@@ -7,6 +7,7 @@
 #include "CommonDefines.h"
 #include "Vector.h"
 #include "Matrix.h"
+
 #define p1 73856093
 #define p2 19349663
 #define p3 83492791
@@ -19,7 +20,7 @@ inline size_t v2hash(v2 v)
 
 inline size_t v3hash(v3 v)
 {
-    return ((u64)v.x * p1) ^ (u64)((u64)v.y * p2) ^ ((u64)v.z * p3);
+    return ((u64)v.x * p1) ^ ((u64)v.y * p2) ^ ((u64)v.z * p3);
 }
 
 inline size_t v4hash(v4 v)

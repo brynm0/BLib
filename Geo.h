@@ -11,6 +11,7 @@ enum MeshType
 {
     MESH_TYPE_TRIANGLES,
     MESH_TYPE_QUADS,
+    MESH_TYPE_NGONS,
     MESH_TYPE_COUNT
 };
 
