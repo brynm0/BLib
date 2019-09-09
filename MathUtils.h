@@ -18,7 +18,7 @@ flocal inline r32 sqLen(v3 vec);
 flocal inline r32 sqLen(v2 vec);
 flocal inline u32 ceiling(r32 num);
 flocal inline void limit(v3* toLimit, const r32& limiter);
-#if 0 
+#if 0
 flocal void limit (v3* toLimit, const r32& limiter)
 {
     r32 toLimitLenSq = sqLen(*toLimit);

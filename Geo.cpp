@@ -107,6 +107,7 @@ flocal Mesh
 loadMesh(char* path)
 {
     Mesh out = {};
+    out.type = MESH_TYPE_TRIANGLES;
     FILE* f = fopen(path, "r");
     char buf[256];
     std::vector<v3> positions = {};
@@ -333,6 +334,24 @@ flocal b32 writeMeshFile(const EntityMesh& m, char* path)
     return true;
     
     
+}
+
+flocal bool rayCastMesh(v3 ro, v3 rd, const EntityMesh& mesh, v3* intersection)
+{
+    v3 result = {};
+    for (int i = 0; i < mesh.indexCount; i+=3)
+    {
+        v3 a = mesh.positions[mesh.vIndices[i  ]];
+        v3 b = mesh.positions[mesh.vIndices[i+1]];
+        v3 c = mesh.positions[mesh.vIndices[i+2]];
+        if (rayTriangleX(ro, rd, a, b, c, &result))
+        {
+            *intersection = result;
+            return true;
+        }
+    }
+    *intersection = {};
+    return false;
 }
 
 flocal EntityMesh convertMeshToEntityMesh(const Mesh& m)

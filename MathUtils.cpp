@@ -8,6 +8,48 @@
 #include <math.h>
 #include "MathUtils.h"
 
+
+
+bool rayTriangleX(v3 ro, 
+                  v3 rd, 
+                  v3 a, v3 b, v3 c,
+                  v3* intersection)
+{
+    const r32 EPSILON = 0.0000001f;
+    v3 edge1 = b - a;
+    v3 edge2 = c - a;
+    v3 h = cross(rd, edge2); //rd.crossProduct(edge2);
+    r32 dotted = dot(edge1, h); //edge1.dotProduct(h);
+    if (dotted > -EPSILON && dotted < EPSILON)
+    {
+        return false;    // This ray is parallel to this triangle.
+    }
+    r32 f = 1.0/dotted;
+    v3 s = ro - a;
+    r32 u = f * dot(s,h); //s.dotProduct(h);
+    if (u < 0.0 || u > 1.0)
+    {
+        return false;
+    }
+    v3 q = cross(s, edge1); //s.crossProduct(edge1);
+    r32 v = f * dot(rd, q); //rd.dotProduct(q);
+    if (v < 0.0 || u + v > 1.0)
+    {
+        return false;
+    }
+    // At this stage we can compute t to find out where the intersection point is on the line.
+    float t = f * dot(edge2, q); //edge2.dotProduct(q);
+    if (t > EPSILON) // ray intersection
+    {
+        *intersection = ro + rd * t;
+        return true;
+    }
+    else // This means that there is a line intersection but not a ray intersection.
+    {
+        return false;
+    }
+}
+
 flocal inline r32
 sqLen(v3 vec)
 {
@@ -90,6 +132,11 @@ math_max(r32 a, r32 b)
         return a;
     }
     return b;
+}
+
+flocal inline r32 max3(r32 a, r32 b, r32 c)
+{
+    return math_max(math_max(a, b), c);
 }
 
 flocal inline r32

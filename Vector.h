@@ -359,6 +359,21 @@ inline v3 v(const v2& a, r32 w)
     return {a.x, a.y, w};
 }
 
+flocal inline v3 xyy(const v2& a)
+{
+    return {a.x, a.y, a.y};
+}
+
+flocal inline v3 yxy(const v2& a)
+{
+    return {a.y, a.x, a.y};
+}
+
+flocal inline v3 yyx(const v2& a)
+{
+    return {a.y, a.y, a.x};
+}
+
 inline v3 normalize(const v3& a);
 inline r32 dot(const v3& a, const v3& b);
 

@@ -74,7 +74,7 @@ namespace std
 		size_t operator()(Edge const& v) const
 		{
             return ((hash<Vertex>()(v.a) ^
-                     (hash<Vertex>()(v.b) << 1)));
+                     (hash<Vertex>()(v.b))));
                      
 		}
 	};
