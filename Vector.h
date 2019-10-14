@@ -374,6 +374,18 @@ flocal inline v3 yyx(const v2& a)
     return {a.y, a.y, a.x};
 }
 
+flocal inline b32 eps_equals(const v3& a, const v3& b, r32 eps)
+{
+    if (a.x < (b.x + eps) && a.x > (b.x - eps) &&
+        a.y < (b.y + eps) && a.y > (b.y - eps) &&
+        a.z < (b.z + eps) && a.z > (b.z - eps))
+    {
+        return true;
+    }
+    return false;
+    
+}
+
 inline v3 normalize(const v3& a);
 inline r32 dot(const v3& a, const v3& b);
 

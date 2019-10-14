@@ -1,4 +1,3 @@
-
 /* ========================================================================
    $File: $
    $Date: $
@@ -104,7 +103,7 @@ quad(r32 aspectRatio, v3 pos, v3 normal, v3 size)
 }
 
 flocal Mesh
-loadMesh(char* path)
+loadMesh(char* path, b32 swapYZ)
 {
     Mesh out = {};
     out.type = MESH_TYPE_TRIANGLES;
@@ -144,7 +143,14 @@ loadMesh(char* path)
             r32 x = atof(xs);
             r32 y = atof(ys);
             r32 z = atof(zs);
-            positions.push_back({x,y,z});
+            if (!swapYZ)
+            {
+                positions.push_back({x,y,z});
+            }
+            else
+            {
+                positions.push_back({x,z,y});
+            }
             colors.push_back({0.5f, 0.5f, 0.5f});
         }
         else if (buf[0] == 'f')
@@ -288,18 +294,18 @@ flocal b32 writeMeshFile(const EntityMesh& m, char* path)
     }
     fprintf(f, "# obj file made by bryn murrell\n");
 
-    for (int i = 0; i < m.vertexCount; i++)
+    for (u32 i = 0; i < m.vertexCount; i++)
     {
         const v3* current = &m.positions[i];
         fprintf(f, "v %.10f %.10f %.10f\n", current->x, current->y, current->z);
     }
-    for (int i = 0; i < m.paramCount; i++)
+    for (u32 i = 0; i < m.paramCount; i++)
     {
         const v2* current = &m.parameters[i];
         fprintf(f, "vt %.10f %.10f\n", current->x, current->y);
     }
 
-    for (int i = 0; i < m.normalCount; i++)
+    for (u32 i = 0; i < m.normalCount; i++)
     {
         const v3* current = &m.normals[i];
         fprintf(f, "vn %.10f %.10f %.10f\n", current->x, current->y, current->z);
@@ -307,7 +313,7 @@ flocal b32 writeMeshFile(const EntityMesh& m, char* path)
     }
     if (m.type == MESH_TYPE_TRIANGLES)
     {
-        for(int i = 0; i < m.indexCount; i+=3)
+        for(u32 i = 0; i < m.indexCount; i+=3)
         {
             fprintf(f, "f %d/%d/%d %d/%d/%d %d/%d/%d\n",
                     1 + m.vIndices[i    ], 1 + m.tIndices[i    ], 1 + m.nIndices[i    ],
@@ -319,7 +325,7 @@ flocal b32 writeMeshFile(const EntityMesh& m, char* path)
     else if (m.type == MESH_TYPE_QUADS)
     {
      
-        for(int i = 0; i < m.indexCount; i+=4)
+        for(u32 i = 0; i < m.indexCount; i+=4)
         {
             fprintf(f, "f %d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n",
                     1 + m.vIndices[i    ], 1 + m.tIndices[i    ], 1 + m.nIndices[i    ],
@@ -336,10 +342,10 @@ flocal b32 writeMeshFile(const EntityMesh& m, char* path)
     
 }
 
-flocal bool rayCastMesh(v3 ro, v3 rd, const EntityMesh& mesh, v3* intersection)
+flocal bool castMesh(v3 ro, v3 rd, const EntityMesh& mesh, v3* intersection)
 {
     v3 result = {};
-    for (int i = 0; i < mesh.indexCount; i+=3)
+    for (u32 i = 0; i < mesh.indexCount; i+=3)
     {
         v3 a = mesh.positions[mesh.vIndices[i  ]];
         v3 b = mesh.positions[mesh.vIndices[i+1]];
@@ -354,7 +360,26 @@ flocal bool rayCastMesh(v3 ro, v3 rd, const EntityMesh& mesh, v3* intersection)
     return false;
 }
 
-flocal EntityMesh convertMeshToEntityMesh(const Mesh& m)
+flocal v3* castMesh(v3 ro, v3 rd, const EntityMesh& mesh, u32 maxHits, u32* hitCount)
+{
+    v3* result = (v3*)calloc(maxHits, sizeof(v3));
+    u32 numHits = 0;
+    for (u32 i = 0; i < mesh.indexCount; i+=3)
+    {
+        v3 a = mesh.positions[mesh.vIndices[i  ]];
+        v3 b = mesh.positions[mesh.vIndices[i+1]];
+        v3 c = mesh.positions[mesh.vIndices[i+2]];
+        v3 res = {};
+        if (rayTriangleX(ro, rd, a, b, c, &res))
+        {
+            result[numHits++] = res;
+        }
+    }
+    *hitCount = numHits;
+    return result;
+}
+
+flocal EntityMesh convertMeshToEntityMesh(const Mesh& m, v3 color)
 {
 
     EntityMesh out;
@@ -372,27 +397,40 @@ flocal EntityMesh convertMeshToEntityMesh(const Mesh& m)
     out.vIndices = (u32*)malloc(sizeof(u32) * out.indexCount);
     out.tIndices = (u32*)malloc(sizeof(u32) * out.indexCount);
     out.nIndices = (u32*)malloc(sizeof(u32) * out.indexCount);
-    for (int i = 0; i < out.indexCount; i++)
+    for (u32 idx = 0; idx < out.indexCount; idx++)
     {
-        out.vIndices[i] = m.vIndices[i];
-        out.tIndices[i] = m.tIndices[i];
-        out.nIndices[i] = m.nIndices[i];
+        out.vIndices[idx] = m.vIndices[idx];
+        out.tIndices[idx] = m.tIndices[idx];
+        out.nIndices[idx] = m.nIndices[idx];
     }    
-    for (int i = 0; i < m.pos.size(); i++)
+    for (u32 idx = 0; idx < m.pos.size(); idx++)
     {
-        out.positions[i] = m.pos[i];
+        out.positions[idx] = m.pos[idx];
     }
-    for (int i = 0; i < m.coords.size(); i++)
+    for (u32 idx = 0; idx < m.coords.size(); idx++)
     {
-        out.parameters[i] = m.coords[i];
+        out.parameters[idx] = m.coords[idx];
     }
-    for (int i = 0; i < m.colors.size(); i++)
+    for (u32 idx = 0; idx < m.colors.size(); idx++)
     {
-        out.colors[i] = m.colors[i];
+        out.colors[idx] = m.colors[idx];
     }
-    for (int i = 0; i < m.normals.size(); i++)
+    for (u32 idx = 0; idx < m.normals.size(); idx++)
     {
-        out.normals[i] = m.normals[i];
+        out.normals[idx] = m.normals[idx];
+    }
+
+    out.vertices = (Vertex*)malloc(sizeof(Vertex)*out.vertexCount);
+    
+    for (u32 i = 0; i < out.indexCount; i++)
+    {
+        u32 vidx = out.vIndices[i];
+        u32 tidx = out.tIndices[i];
+        u32 nidx = out.nIndices[i];
+        out.vertices[vidx] = {out.positions[vidx],
+                              color,
+                              out.normals[nidx],
+                              out.parameters[tidx]};
     }
     return out;                                      
 }

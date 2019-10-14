@@ -99,6 +99,12 @@ flocal inline r32 fast_fabs(r32 x)
     return *(float*)&casted;
 }
 
+flocal inline
+r32 distance (const v3& a, const v3& b)
+{
+    return sqrt(sqDist(a,b));
+}
+
 flocal inline r32
 map(r32 input,
     r32 fromLower,
@@ -362,3 +368,10 @@ flocal inline r32 degrees(r32 radians)
     return radians * (180.0f / PI(1));
 }
 #endif
+
+flocal inline v3
+evaluate_line_parameter(const v3& start, const v3& end, const r32& t)
+{
+    ASSERT(t >= 0 && t <= 1, "Parameter must be in the range (0,1)");
+    return t * (end - start) + start;
+}

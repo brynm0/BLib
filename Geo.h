@@ -36,6 +36,8 @@ struct EntityMesh
     u32 normalCount;
     v3* normals;
 
+    Vertex* vertices;
+    
     QuadTree* paramTree;
     OctTree* vertexTree;
     

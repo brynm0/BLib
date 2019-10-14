@@ -34,6 +34,7 @@
 #define SQ(number) (number * number)
 #define MAX_VEC (v(R32_MAX, R32_MAX, R32_MAX))
 
+#define SCL 5
 #define MAX_VEC2 (v(R32_MAX, R32_MAX))
 
 #define RADIANS(DEGREES) (DEGREES * (PI(1) / 180.0f))
@@ -43,6 +44,10 @@
 #define MEGABYTES(number) ((KILOBYTES(number) * 1024))
 #define GIGABYTES(number) ((MEGABYTES(number) * 1024))
 
+#define ACCESS_PTR(ptr, idx, type) (&(((type *)ptr)[idx]))
+
+#define ACCESS_VAL(ptr, idx, type) (((type*)ptr)[idx])
+        
 //Only works for constant arrays, not pointers
 #define arrayCount(array) (sizeof(array) / sizeof(array[0]))
 #if DEBUG==1
@@ -55,6 +60,11 @@
 #else
 #define ASSERT(expr, text) expr
 #endif
+
+#define LOOP(induction, end) for(u32 induction = 0; induction < end; induction++) 
+#define POOL(induction, initial) for(u32 induction = initial; induction > -1; induction--)
+#define REPEAT(end) for (u32 i = 0; i < end; i++)
+
 
 #if 0 
 void* safe_realloc(void* src, size_t size, size_t original)
