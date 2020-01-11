@@ -56,6 +56,7 @@ flocal Font
 loadFontFile(char* filename)
 {
     Font out = {};
+    out.character_arr = (Character*)malloc(sizeof(Character) * MAX_CHARS_IN_FONT);
     std::vector<char> v = readFile(filename);
     std::string file = v.data();
     std::istringstream iss(file);
@@ -225,6 +226,11 @@ loadFontFile(char* filename)
             if (results.size() != 2)
             {
                 Character c = {};
+                c.kerning_arr = (Kerning*)malloc(sizeof(Kerning) * MAX_CHARS_IN_FONT);
+                for (int i = 0; i < MAX_CHARS_IN_FONT; i++)
+                {
+                    c.kerning_arr[i] = {};
+                }
                 for (int i = 0; i < results.size(); i++)
                 {
                     switch(i)
@@ -260,7 +266,11 @@ loadFontFile(char* filename)
                             c.channel = numFromToken(results[i]);
                             break;
                         case 11 :
-                            if (results.size() != i+1)
+                            if (c.id == 32)
+                            {
+                                c.letter = ' ';
+                            }
+                            else if (results.size() != i+1)
                             {
                                 std::string s = results[i] + results[i+1];
                                 stringFromToken(s, &c.letter);
@@ -273,8 +283,10 @@ loadFontFile(char* filename)
                             break;
                     }
                 }
-                out.ids.insert({c.letter, c.id});
-                out.characters.insert({c.id, c});
+                
+                //out.ids.insert({c.letter, c.id});
+                out.character_arr[c.letter] = c;
+                //out.characters.insert({c.id, c});
             }
         }
         else if (results[0] == "kerning")
@@ -296,7 +308,8 @@ loadFontFile(char* filename)
                         break; 
                 }
             }
-            out.characters.at(k.idFirst).kernings.insert({k.idSecond,k});
+            out.character_arr[k.idFirst].kerning_arr[k.idSecond] = k;
+            //out.characters.at(k.idFirst).kernings.insert({k.idSecond,k});
         }
     }
 

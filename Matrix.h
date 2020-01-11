@@ -9,7 +9,7 @@
 #include "CommonDefines.h"
 #include "Vector.h"
 #include <math.h>
-
+#include <stdio.h>
 struct m4
 {
     union
@@ -50,6 +50,10 @@ struct m4
         {
             //TODO overload [] operator for matrices to return a vector
             r32 arr[4][4];
+        };
+        struct
+        {
+            r32 arr_1d[16];
         };
     };
 };
@@ -185,6 +189,19 @@ flocal inline m4 matrix()
     return result;
 }
 
+flocal inline m4
+ortho(r32 left, r32 right, r32 bottom, r32 top, r32 z_near, r32 z_far)
+{
+    m4 result = matrix();
+    result.arr[0][0] = 2.0f / (right - left);
+    result.arr[1][1] = 2.0f / (top - bottom);
+    result.arr[2][2] = - (1.0f) / (z_far - z_near);
+    result.arr[3][0] = - (right + left) / (right - left);
+    result.arr[3][1] = - (top + bottom) / (top - bottom);
+    result.arr[3][2] = - (z_near) / (z_far - z_near);
+    return result;
+}
+
 flocal inline m4 perspective(r32 fovy, r32 aspect, r32 zNear, r32 zFar)
 {
 
@@ -275,6 +292,138 @@ flocal inline m4 rotate(const m4& m, r32 angle, v3 v)
 flocal inline m4 rotate(r32 angle, v3 axis)
 {
     return rotate(matrix(), angle, axis);
+}
+
+flocal inline m4 inverse(m4 m)
+{
+    double inv[16], det;
+    int i;
+
+    inv[0] = m.arr_1d[5]  * m.arr_1d[10] * m.arr_1d[15] - 
+             m.arr_1d[5]  * m.arr_1d[11] * m.arr_1d[14] - 
+             m.arr_1d[9]  * m.arr_1d[6]  * m.arr_1d[15] + 
+             m.arr_1d[9]  * m.arr_1d[7]  * m.arr_1d[14] +
+             m.arr_1d[13] * m.arr_1d[6]  * m.arr_1d[11] - 
+             m.arr_1d[13] * m.arr_1d[7]  * m.arr_1d[10];
+
+    inv[4] = -m.arr_1d[4]  * m.arr_1d[10] * m.arr_1d[15] + 
+              m.arr_1d[4]  * m.arr_1d[11] * m.arr_1d[14] + 
+              m.arr_1d[8]  * m.arr_1d[6]  * m.arr_1d[15] - 
+              m.arr_1d[8]  * m.arr_1d[7]  * m.arr_1d[14] - 
+              m.arr_1d[12] * m.arr_1d[6]  * m.arr_1d[11] + 
+              m.arr_1d[12] * m.arr_1d[7]  * m.arr_1d[10];
+
+    inv[8] = m.arr_1d[4]  * m.arr_1d[9] * m.arr_1d[15] - 
+             m.arr_1d[4]  * m.arr_1d[11] * m.arr_1d[13] - 
+             m.arr_1d[8]  * m.arr_1d[5] * m.arr_1d[15] + 
+             m.arr_1d[8]  * m.arr_1d[7] * m.arr_1d[13] + 
+             m.arr_1d[12] * m.arr_1d[5] * m.arr_1d[11] - 
+             m.arr_1d[12] * m.arr_1d[7] * m.arr_1d[9];
+
+    inv[12] = -m.arr_1d[4]  * m.arr_1d[9] * m.arr_1d[14] + 
+               m.arr_1d[4]  * m.arr_1d[10] * m.arr_1d[13] +
+               m.arr_1d[8]  * m.arr_1d[5] * m.arr_1d[14] - 
+               m.arr_1d[8]  * m.arr_1d[6] * m.arr_1d[13] - 
+               m.arr_1d[12] * m.arr_1d[5] * m.arr_1d[10] + 
+               m.arr_1d[12] * m.arr_1d[6] * m.arr_1d[9];
+
+    inv[1] = -m.arr_1d[1]  * m.arr_1d[10] * m.arr_1d[15] + 
+              m.arr_1d[1]  * m.arr_1d[11] * m.arr_1d[14] + 
+              m.arr_1d[9]  * m.arr_1d[2] * m.arr_1d[15] - 
+              m.arr_1d[9]  * m.arr_1d[3] * m.arr_1d[14] - 
+              m.arr_1d[13] * m.arr_1d[2] * m.arr_1d[11] + 
+              m.arr_1d[13] * m.arr_1d[3] * m.arr_1d[10];
+
+    inv[5] = m.arr_1d[0]  * m.arr_1d[10] * m.arr_1d[15] - 
+             m.arr_1d[0]  * m.arr_1d[11] * m.arr_1d[14] - 
+             m.arr_1d[8]  * m.arr_1d[2] * m.arr_1d[15] + 
+             m.arr_1d[8]  * m.arr_1d[3] * m.arr_1d[14] + 
+             m.arr_1d[12] * m.arr_1d[2] * m.arr_1d[11] - 
+             m.arr_1d[12] * m.arr_1d[3] * m.arr_1d[10];
+
+    inv[9] = -m.arr_1d[0]  * m.arr_1d[9] * m.arr_1d[15] + 
+              m.arr_1d[0]  * m.arr_1d[11] * m.arr_1d[13] + 
+              m.arr_1d[8]  * m.arr_1d[1] * m.arr_1d[15] - 
+              m.arr_1d[8]  * m.arr_1d[3] * m.arr_1d[13] - 
+              m.arr_1d[12] * m.arr_1d[1] * m.arr_1d[11] + 
+              m.arr_1d[12] * m.arr_1d[3] * m.arr_1d[9];
+
+    inv[13] = m.arr_1d[0]  * m.arr_1d[9] * m.arr_1d[14] - 
+              m.arr_1d[0]  * m.arr_1d[10] * m.arr_1d[13] - 
+              m.arr_1d[8]  * m.arr_1d[1] * m.arr_1d[14] + 
+              m.arr_1d[8]  * m.arr_1d[2] * m.arr_1d[13] + 
+              m.arr_1d[12] * m.arr_1d[1] * m.arr_1d[10] - 
+              m.arr_1d[12] * m.arr_1d[2] * m.arr_1d[9];
+
+    inv[2] = m.arr_1d[1]  * m.arr_1d[6] * m.arr_1d[15] - 
+             m.arr_1d[1]  * m.arr_1d[7] * m.arr_1d[14] - 
+             m.arr_1d[5]  * m.arr_1d[2] * m.arr_1d[15] + 
+             m.arr_1d[5]  * m.arr_1d[3] * m.arr_1d[14] + 
+             m.arr_1d[13] * m.arr_1d[2] * m.arr_1d[7] - 
+             m.arr_1d[13] * m.arr_1d[3] * m.arr_1d[6];
+
+    inv[6] = -m.arr_1d[0]  * m.arr_1d[6] * m.arr_1d[15] + 
+              m.arr_1d[0]  * m.arr_1d[7] * m.arr_1d[14] + 
+              m.arr_1d[4]  * m.arr_1d[2] * m.arr_1d[15] - 
+              m.arr_1d[4]  * m.arr_1d[3] * m.arr_1d[14] - 
+              m.arr_1d[12] * m.arr_1d[2] * m.arr_1d[7] + 
+              m.arr_1d[12] * m.arr_1d[3] * m.arr_1d[6];
+
+    inv[10] = m.arr_1d[0]  * m.arr_1d[5] * m.arr_1d[15] - 
+              m.arr_1d[0]  * m.arr_1d[7] * m.arr_1d[13] - 
+              m.arr_1d[4]  * m.arr_1d[1] * m.arr_1d[15] + 
+              m.arr_1d[4]  * m.arr_1d[3] * m.arr_1d[13] + 
+              m.arr_1d[12] * m.arr_1d[1] * m.arr_1d[7] - 
+              m.arr_1d[12] * m.arr_1d[3] * m.arr_1d[5];
+
+    inv[14] = -m.arr_1d[0]  * m.arr_1d[5] * m.arr_1d[14] + 
+               m.arr_1d[0]  * m.arr_1d[6] * m.arr_1d[13] + 
+               m.arr_1d[4]  * m.arr_1d[1] * m.arr_1d[14] - 
+               m.arr_1d[4]  * m.arr_1d[2] * m.arr_1d[13] - 
+               m.arr_1d[12] * m.arr_1d[1] * m.arr_1d[6] + 
+               m.arr_1d[12] * m.arr_1d[2] * m.arr_1d[5];
+
+    inv[3] = -m.arr_1d[1] * m.arr_1d[6] * m.arr_1d[11] + 
+              m.arr_1d[1] * m.arr_1d[7] * m.arr_1d[10] + 
+              m.arr_1d[5] * m.arr_1d[2] * m.arr_1d[11] - 
+              m.arr_1d[5] * m.arr_1d[3] * m.arr_1d[10] - 
+              m.arr_1d[9] * m.arr_1d[2] * m.arr_1d[7] + 
+              m.arr_1d[9] * m.arr_1d[3] * m.arr_1d[6];
+
+    inv[7] = m.arr_1d[0] * m.arr_1d[6] * m.arr_1d[11] - 
+             m.arr_1d[0] * m.arr_1d[7] * m.arr_1d[10] - 
+             m.arr_1d[4] * m.arr_1d[2] * m.arr_1d[11] + 
+             m.arr_1d[4] * m.arr_1d[3] * m.arr_1d[10] + 
+             m.arr_1d[8] * m.arr_1d[2] * m.arr_1d[7] - 
+             m.arr_1d[8] * m.arr_1d[3] * m.arr_1d[6];
+
+    inv[11] = -m.arr_1d[0] * m.arr_1d[5] * m.arr_1d[11] + 
+               m.arr_1d[0] * m.arr_1d[7] * m.arr_1d[9] + 
+               m.arr_1d[4] * m.arr_1d[1] * m.arr_1d[11] - 
+               m.arr_1d[4] * m.arr_1d[3] * m.arr_1d[9] - 
+               m.arr_1d[8] * m.arr_1d[1] * m.arr_1d[7] + 
+               m.arr_1d[8] * m.arr_1d[3] * m.arr_1d[5];
+
+    inv[15] = m.arr_1d[0] * m.arr_1d[5] * m.arr_1d[10] - 
+              m.arr_1d[0] * m.arr_1d[6] * m.arr_1d[9] - 
+              m.arr_1d[4] * m.arr_1d[1] * m.arr_1d[10] + 
+              m.arr_1d[4] * m.arr_1d[2] * m.arr_1d[9] + 
+              m.arr_1d[8] * m.arr_1d[1] * m.arr_1d[6] - 
+              m.arr_1d[8] * m.arr_1d[2] * m.arr_1d[5];
+
+    det = m.arr_1d[0] * inv[0] + m.arr_1d[1] * inv[4] + m.arr_1d[2] * inv[8] + m.arr_1d[3] * inv[12];
+
+    ASSERT(det != 0, "You didn't pass an invertible matrix, silly!\n");
+
+    det = 1.0 / det;
+    m4 ret = {};
+    for (i = 0; i < 16; i++)
+    {
+        ret.arr_1d[i] = inv[i] * det;
+    }
+
+    return ret;
+   
 }
 
 

@@ -38,5 +38,38 @@ inline bool operator < (const Vertex& a, const Vertex& b)
 {
     return (sqLen(a.pos) < sqLen(b.pos));
 }
+flocal Vertex vertex(float x, float y, float z)
+{
+    Vertex vert = {};
+    vert.pos = v(x,y,z);
+    vert.color = v(1.0f, 1.0f, 1.0f);
+    return vert;
+}
+
+flocal Vertex vertex(v3 pos)
+{
+    Vertex vert = {};
+    vert.pos = pos;
+    vert.color = v(1.0f, 1.0f, 1.0f);
+    return vert;
+}
+
+flocal Vertex vertex(v3 pos, v3 color)
+{
+    Vertex vert = {};
+    vert.pos = pos;
+    vert.color = color;
+    return vert;
+}
+
+flocal Vertex vertex(v3 pos, v3 color, v3 normal, v2 texcoord)
+{
+    Vertex vert = {};
+    vert.pos = pos;
+    vert.color = color;
+    vert.normal = normal;
+    vert.texCoord = texcoord;
+    return vert;
+}
 
 #endif /* VERTEX_H */

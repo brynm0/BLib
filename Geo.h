@@ -1,6 +1,6 @@
 #if !defined(GEO_H)
 #include <vector>
-#include <unordered_map>
+#include "flat_hash_map.hpp"
 #include <map>
 #include "Vertex.h"
 #include "CommonDefines.h"
@@ -41,8 +41,6 @@ struct EntityMesh
     QuadTree* paramTree;
     OctTree* vertexTree;
     
-//std::unordered_map<v3, std::vector<u32>> facemap;
-//std::unordered_map<v2, std::vector<u32>> paramfacemap;
 };
 
 struct Mesh
@@ -52,8 +50,6 @@ struct Mesh
     std::vector<v3> colors;
 	std::vector<v2> coords;
 	std::vector<v3> normals;
-    //vertexmap maps from vertices to their occurences in the index array
-	//std::unordered_map<v2, u32> indexMap;
 	std::vector<u32> vIndices;
 	std::vector<u32> tIndices;
 	std::vector<u32> nIndices;
@@ -101,7 +97,7 @@ struct Curve
     //TODO(Bryn):
     //Some object space spatial partitioning for edges should be easy
     //Done with a preprocessor
-    std::unordered_map<Edge, u32> edgeMap;
+    ska::flat_hash_map<Edge, u32> edgeMap;
 };
 
 #define GEO_H

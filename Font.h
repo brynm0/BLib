@@ -7,9 +7,9 @@
    $Creator: Bryn Murrell $
    ======================================================================== */
 
+#include "flat_hash_map.hpp"
 #include "CommonDefines.h"
-#include <unordered_map>
-
+#define MAX_CHARS_IN_FONT 256
 struct Kerning
 {
     u32 idFirst;
@@ -30,7 +30,7 @@ struct Character
     u32 page;
     u32 channel;
     char letter;
-    std::unordered_map<u32, Kerning> kernings;
+    Kerning* kerning_arr; //[MAX_CHARS_IN_FONT];
 };
 
 struct Page
@@ -57,14 +57,14 @@ struct Font
     u32 scaleH;
     b32 packed;
     Page page;
-    std::unordered_map<char, u32> ids;
-    std::unordered_map<u32, Character> characters;
+    
+    Character* character_arr; //[MAX_CHARS_IN_FONT];
 };
 
 struct FontInfo
 {
     u32 characterCount;
-    std::unordered_map<char, u32> charVertexMap;
+    ska::flat_hash_map<char, u32> charVertexMap;
 };
 
 struct TypeFace

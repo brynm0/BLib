@@ -9,17 +9,16 @@
 #define i32 int32_t
 
 #define i64 int64_t
-#define b32 u32
+#define b32 uint32_t
 #define u64 uint64_t
 #define r32 float
 #define r64 double
-
+#define NUM_THREADS (1)
 #define DEFAULT_ENTITIES 256
 #define RENDER_FRACTION 1
 #define MAX_NAME_LEN 256
 #define BG_COLOR 0xe0b4b4
 #define BG_COLOR_LIGHTER 0xddc7c7
-#define b32 u32
 #define B32_TRUE 1;
 #define B32_FALSE 0;
 #define flocal static
@@ -29,7 +28,10 @@
 #define U64_MAX UINT64_MAX
 #define R32_MAX FLT_MAX
 #define NULL_TERMINATOR '\0'
-#define MAX_UBOS (5000000)
+
+#define MAX_UBOS (500000)
+#define VBO_ELEMENTS (1000)
+
 #define PI(number) ((number) * 3.14159265359f)
 #define SQ(number) (number * number)
 #define MAX_VEC (v(R32_MAX, R32_MAX, R32_MAX))

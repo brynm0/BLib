@@ -348,6 +348,70 @@ flocal v3 lineCP(v3 a, v3 b, v3 query)
     return a + (aToB * t);
 }
 
+flocal inline v2 quad_line_intersection(v2 line_a, v2 line_b, v2 top_left, v2 bottom_right)
+{
+
+    v2 intersection_result = MAX_VEC2;
+    r32 record_distance = R32_MAX;
+    
+    v2 corner_min = v(math_min(top_left.x, bottom_right.x),
+                   math_min(top_left.y, bottom_right.y));
+    v2 corner_max = v(math_max(top_left.x, bottom_right.x),
+                   math_max(top_left.y, bottom_right.y));
+
+    v2 intersection = MAX_VEC2;    
+    intersection = lineIntersection(line_a,
+                                    line_b,
+                                    corner_min,
+                                    v(corner_min.x, corner_max.y),
+                                    nullptr);
+    r32 distance = sqDist(intersection, line_a);
+    
+    if (intersection != MAX_VEC2 && distance < record_distance)
+    {
+        record_distance = distance;
+        intersection_result = intersection;
+    }
+    
+    intersection = lineIntersection(line_a,
+                                    line_b,
+                                    v(corner_max.x, corner_min.y),
+                                    corner_max,
+                                    nullptr);
+    distance = sqDist(intersection, line_a);
+    if (intersection != MAX_VEC2 && distance < record_distance)
+    {
+        record_distance = distance;
+        intersection_result = intersection;
+    }
+    
+    intersection = lineIntersection(line_a,
+                                    line_b,
+                                    v(corner_min.x, corner_max.y),
+                                    corner_max,
+                                    nullptr);
+    distance = sqDist(intersection, line_a);
+    if (intersection != MAX_VEC2 && distance < record_distance)
+    {
+        record_distance = distance;
+        intersection_result = intersection;
+    }
+    
+    intersection = lineIntersection(line_a,
+                                    line_b,
+                                    corner_min,
+                                    v(corner_max.x, corner_min.y),
+                                    nullptr);
+    
+    distance = sqDist(intersection, line_a);
+    if (intersection != MAX_VEC2 && distance < record_distance)
+    {
+        record_distance = distance;
+        intersection_result = intersection;
+    }
+    return intersection_result;
+}
+
 flocal inline v3 baryCoords(v2 a, v2 b, v2 c, v2 query)
 {
     v3 lambda = {};

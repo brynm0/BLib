@@ -324,6 +324,11 @@ inline v2 xy(const v3& a)
     return {a.x, a.y};
 }
 
+inline v2 xy(const v4& a)
+{
+    return {a.x, a.y};
+}
+
 inline v2 v(r32 a, r32 b)
 {
     return {a,b};
@@ -352,6 +357,11 @@ inline v4 v(r32 a, r32 b, r32 c, r32 d)
 inline v4 v(const v3& a, r32 w)
 {
     return {a.x, a.y, a.z, w};
+}
+
+inline v4 v(const v2& a, r32 w, r32 u)
+{
+    return {a.x, a.y, w, u};
 }
 
 inline v3 v(const v2& a, r32 w)
