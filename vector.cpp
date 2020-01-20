@@ -63,6 +63,11 @@ inline r32 dot(const v3& a, const v3& b)
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+inline r32 dot(const v2& a, const v2& b)
+{
+    return a.x * b.x + a.y * b.y;
+}
+
 inline v3 rotate (const v3& v, const r32& angle, const v3& axis)
 {
     return m4tom3(rotate(angle, axis)) * v;

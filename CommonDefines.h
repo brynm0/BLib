@@ -13,7 +13,7 @@
 #define u64 uint64_t
 #define r32 float
 #define r64 double
-#define NUM_THREADS (1)
+#define NUM_WORKER_THREADS (1)
 #define DEFAULT_ENTITIES 256
 #define RENDER_FRACTION 1
 #define MAX_NAME_LEN 256
@@ -28,12 +28,19 @@
 #define U64_MAX UINT64_MAX
 #define R32_MAX FLT_MAX
 #define NULL_TERMINATOR '\0'
+#define NUM_BEZIER_VERTS 3
 
-#define MAX_UBOS (500000)
-#define VBO_ELEMENTS (1000)
+#define ASCII_START 32
+#define ASCII_END 127
+#define TEXT_SIZE_MIN 0.04f
+
+
+#define MAX_UBOS (50000)
+#define VBO_ELEMENTS (100000)
 
 #define PI(number) ((number) * 3.14159265359f)
-#define SQ(number) (number * number)
+#define SQ(number) ((number) * (number))
+#define CUBE(number) ((number) * (number) * (number))
 #define MAX_VEC (v(R32_MAX, R32_MAX, R32_MAX))
 
 #define SCL 5
@@ -64,7 +71,7 @@
 #endif
 
 #define LOOP(induction, end) for(u32 induction = 0; induction < end; induction++) 
-#define POOL(induction, initial) for(u32 induction = initial; induction > -1; induction--)
+#define POOL(induction, initial) for(u32 induction = initial; induction >= 0; induction--)
 #define REPEAT(end) for (u32 i = 0; i < end; i++)
 
 

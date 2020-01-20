@@ -302,7 +302,7 @@ flocal inline v3 baryCoords(v3 a, v3 b, v3 c, v3 p)
     return ret;
 }
 
-flocal v2 lineIntersection(v2 start1, v2 end1, v2 start2, v2 end2, r32* param)
+flocal v2 line_intersection(v2 start1, v2 end1, v2 start2, v2 end2, r32* param)
 {
     const r32 eps = 0.00001f;
       r32 ax = end1.arr[0] - start1.arr[0];
@@ -337,7 +337,7 @@ flocal v2 lineIntersection(v2 start1, v2 end1, v2 start2, v2 end2, r32* param)
     }
 }
 
-flocal v3 lineCP(v3 a, v3 b, v3 query)
+flocal inline v3 lineCP(v3 a, v3 b, v3 query)
 {
     v3 aToB = b - a;
     v3 aToQ = query - a;
@@ -346,6 +346,35 @@ flocal v3 lineCP(v3 a, v3 b, v3 query)
     if (t > 1.0f) {t = 1;}
     else if (t < 0.0f) {t = 0;}
     return a + (aToB * t);
+}
+
+flocal inline v2 lineCP(v2 a, v2 b, v2 query)
+{
+    v2 aToB = b - a;
+    v2 aToQ = query - a;
+    r32 aToB_len = sqLen(aToB);
+    r32 t = dot(aToQ, aToB) / aToB_len;
+    if (t > 1.0f) {t = 1;}
+    else if (t < 0.0f) {t = 0;}
+    return a + (aToB * t);
+}
+
+flocal inline b32 point_is_on_line(v2 a, v2 b, v2 query)
+{
+    v2 aToB = b - a;
+    v2 aToQ = query - a;
+    r32 aToB_len = sqLen(aToB);
+    r32 t = dot(aToQ, aToB) / aToB_len;
+    if (t > 1.0f || t < 0.0f)
+    {
+        return false;
+    }
+    r32 distance = sqDist(lineCP(a,b,query),query);
+    if (distance < 0.001f)
+    {
+        return true;
+    }
+    return false;
 }
 
 flocal inline v2 quad_line_intersection(v2 line_a, v2 line_b, v2 top_left, v2 bottom_right)
@@ -360,7 +389,7 @@ flocal inline v2 quad_line_intersection(v2 line_a, v2 line_b, v2 top_left, v2 bo
                    math_max(top_left.y, bottom_right.y));
 
     v2 intersection = MAX_VEC2;    
-    intersection = lineIntersection(line_a,
+    intersection = line_intersection(line_a,
                                     line_b,
                                     corner_min,
                                     v(corner_min.x, corner_max.y),
@@ -373,7 +402,7 @@ flocal inline v2 quad_line_intersection(v2 line_a, v2 line_b, v2 top_left, v2 bo
         intersection_result = intersection;
     }
     
-    intersection = lineIntersection(line_a,
+    intersection = line_intersection(line_a,
                                     line_b,
                                     v(corner_max.x, corner_min.y),
                                     corner_max,
@@ -385,7 +414,7 @@ flocal inline v2 quad_line_intersection(v2 line_a, v2 line_b, v2 top_left, v2 bo
         intersection_result = intersection;
     }
     
-    intersection = lineIntersection(line_a,
+    intersection = line_intersection(line_a,
                                     line_b,
                                     v(corner_min.x, corner_max.y),
                                     corner_max,
@@ -397,7 +426,7 @@ flocal inline v2 quad_line_intersection(v2 line_a, v2 line_b, v2 top_left, v2 bo
         intersection_result = intersection;
     }
     
-    intersection = lineIntersection(line_a,
+    intersection = line_intersection(line_a,
                                     line_b,
                                     corner_min,
                                     v(corner_max.x, corner_min.y),

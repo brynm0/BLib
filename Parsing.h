@@ -1,4 +1,5 @@
-
+#ifndef PARSING_H
+#define PARSING_H
 
 enum TokenType
 {
@@ -326,3 +327,4 @@ Token token(TokenType type, u32 len, char* text)
 {
     return {type, len, text};
 }
+#endif

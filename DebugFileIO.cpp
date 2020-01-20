@@ -9,7 +9,7 @@
 #include <fstream>
 #include <vector>
 flocal void*
-readEntireFileBinary(char* path)
+read_entire_file_binary(char* path)
 {
     void* result;
     FILE* file = fopen(path, "rb");

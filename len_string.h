@@ -13,6 +13,13 @@ struct len_string
     char* str;
 };
 
+flocal inline void free_l_string(len_string* str)
+{
+    str->buffer_len = 0;
+    str->string_len = 0;
+    free(str->str);
+}
+
 flocal inline len_string l_string(u32 buffer_len)
 {
     len_string str = {};
@@ -42,6 +49,15 @@ flocal inline void append_to_len_string(len_string* l, char* str)
     l->string_len += in_str_len;
     l->str[l->string_len] = 0;
 }
+
+flocal inline len_string l_string(char* str)
+{
+    u32 buffer_len = strlen(str);
+    len_string ret = l_string(buffer_len);
+    append_to_len_string(&ret, str);
+    return ret;
+}
+
 
 flocal inline void sub_str_to_null_terminated(char* s, u32 length, char** out)
 {
