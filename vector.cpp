@@ -58,6 +58,11 @@ inline v3 normalize(const v3& a)
     return a / sqrtf(sqLen(a));
 }
 
+inline v2 normalize(const v2& a)
+{
+    return a / sqrtf(sqLen(a));
+}
+
 inline r32 dot(const v3& a, const v3& b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
