@@ -35,8 +35,8 @@
 #define TEXT_SIZE_MIN 0.04f
 
 
-#define MAX_UBOS (50000)
-#define VBO_ELEMENTS (100000)
+#define MAX_UBOS (500000)
+#define VBO_ELEMENTS (1000000)
 
 #define PI(number) ((number) * 3.14159265359f)
 #define SQ(number) ((number) * (number))

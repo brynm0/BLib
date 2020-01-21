@@ -339,14 +339,14 @@ flocal inline v3 baryCoords(v3 a, v3 b, v3 c, v3 p)
 flocal v2 line_intersection(v2 start1, v2 end1, v2 start2, v2 end2, r32* param)
 {
     const r32 eps = 0.00001f;
-      r32 ax = end1.arr[0] - start1.arr[0];
-    r32 ay = end1.arr[1] - start1.arr[1];
+      r32 ax = end1.x - start1.x;
+    r32 ay = end1.y - start1.y;
 
-    r32 bx = start2.arr[0] - end2.arr[0];
-    r32 by = start2.arr[1] - end2.arr[1];
+    r32 bx = start2.x - end2.x;
+    r32 by = start2.y - end2.y;
     
-    r32 dx = start2.arr[0] - start1.arr[0];
-    r32 dy = start2.arr[1] - start1.arr[1];
+    r32 dx = start2.x - start1.x;
+    r32 dy = start2.y - start1.y;
     
     r32 det = ax * by - ay * bx;
 
