@@ -45,7 +45,7 @@
 
 #define SCL 5
 #define MAX_VEC2 (v(R32_MAX, R32_MAX))
-
+#define MAX_V2 MAX_VEC2
 #define RADIANS(DEGREES) (DEGREES * (PI(1) / 180.0f))
 #define DEGREES(RADIANS) (RADIANS * (180.0f / PI(1)))
 
@@ -54,9 +54,9 @@
 #define GIGABYTES(number) ((MEGABYTES(number) * 1024))
 
 #define ACCESS_PTR(ptr, idx, type) (&(((type *)ptr)[idx]))
-
 #define ACCESS_VAL(ptr, idx, type) (((type*)ptr)[idx])
-        
+#define ASSIGN_PTR(ptr, val) if ((ptr)) { *ptr = (val); }
+
 //Only works for constant arrays, not pointers
 #define arrayCount(array) (sizeof(array) / sizeof(array[0]))
 #if DEBUG==1

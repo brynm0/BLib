@@ -8,9 +8,56 @@
 #include <math.h>
 #include "MathUtils.h"
 
+flocal inline r32
+cross(const v2& a, const v2& b)
+{
+    return a.x * b.y - a.y * b.x;
+}
+
+flocal inline r32 fast_fabs(r32 x)
+{
+    int casted = *(int*) &x;
+    casted &= 0x7FFFFFFF;
+    return *(float*)&casted;
+}
+
+//NOTE t is parameter along the ray direction
+//TODO test this
+b32 ray_line_seg_x(v2 ro,
+                   v2 rd,
+                   v2 a,
+                   v2 b, r32* t, v2* intersection_pt)
+{
+    ASSERT(sqLen(rd) == 1.0f, "Ray dir must be normalised before passing to ray_line_seg_x")
+    v2 v_a = ro - a;
+    v2 v_b = b - a;
+    v2 v_c = v(-rd.y, rd.x);
 
 
-bool rayTriangleX(v3 ro, 
+    r32 d_prod = dot(v_b, v_c);
+    if (fast_fabs(d_prod) < 0.000001f)
+    {
+        ASSIGN_PTR(t, R32_MAX); //if (t) { *t = R32_MAX; }
+        ASSIGN_PTR(intersection_pt, MAX_V2); //if (intersection_pt) { *intersection_pt = MAX_V2; } 
+        return false;
+    }
+    r32 t_a = cross(v_b, v_a) / d_prod;
+    r32 t_b = dot(v_a, v_c) / d_prod;
+    
+    if (t_a >= 0.0 && (t_b >= 0.0 && t_b <= 1.0))
+    {
+        ASSIGN_PTR(t, t_a); //if (t) { *t = t_a; }
+        ASSIGN_PTR(intersection_pt, ro + rd * t_a); //if (intersection_pt) { *intersection_pt = ro + rd * t; }
+        return true;
+    }
+    
+    ASSIGN_PTR(t, R32_MAX); //if (t) { *t = R32_MAX; }
+    ASSIGN_PTR(intersection_pt, MAX_V2); //if (intersection_pt) { *intersection_pt = MAX_V2; } 
+    return false;
+    
+}
+
+b32 ray_triangle_x(v3 ro, 
                   v3 rd, 
                   v3 a, v3 b, v3 c,
                   v3* intersection)
@@ -90,13 +137,6 @@ flocal inline r32
 sqDist(const v2& a, const v2& b)
 {
     return sqLen(a - b);
-}
-
-flocal inline r32 fast_fabs(r32 x)
-{
-    int casted = *(int*) &x;
-    casted &= 0x7FFFFFFF;
-    return *(float*)&casted;
 }
 
 flocal inline
@@ -184,12 +224,6 @@ flocal inline v2
 cross(const v2& a, r32 s)
 {
     return v(s * a.y, -s * a.x);
-}
-
-flocal inline r32
-cross(const v2& a, const v2& b)
-{
-    return a.x * b.y - a.y * b.x;
 }
 
 flocal inline r32
