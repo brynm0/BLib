@@ -9,6 +9,7 @@
 #include "flat_hash_map.hpp"
 #include <vector>
 #include "SDF.h"
+#include "VectorMath.h"
 //NOTE: 
 flocal Mesh
 quad(r32 aspectRatio, v3 pos, v3 normal, v3 size)
@@ -350,7 +351,7 @@ flocal bool castMesh(v3 ro, v3 rd, const EntityMesh& mesh, v3* intersection)
         v3 a = mesh.positions[mesh.vIndices[i  ]];
         v3 b = mesh.positions[mesh.vIndices[i+1]];
         v3 c = mesh.positions[mesh.vIndices[i+2]];
-        if (rayTriangleX(ro, rd, a, b, c, &result))
+        if (ray_triangle_x(ro, rd, a, b, c, &result))
         {
             *intersection = result;
             return true;
@@ -370,7 +371,7 @@ flocal v3* castMesh(v3 ro, v3 rd, const EntityMesh& mesh, u32 maxHits, u32* hitC
         v3 b = mesh.positions[mesh.vIndices[i+1]];
         v3 c = mesh.positions[mesh.vIndices[i+2]];
         v3 res = {};
-        if (rayTriangleX(ro, rd, a, b, c, &res))
+        if (ray_triangle_x(ro, rd, a, b, c, &res))
         {
             result[numHits++] = res;
         }

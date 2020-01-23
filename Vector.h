@@ -397,6 +397,7 @@ flocal inline b32 eps_equals(const v3& a, const v3& b, r32 eps)
 }
 
 inline v3 normalize(const v3& a);
+inline v2 normalize(const v2& a);
 inline r32 dot(const v3& a, const v3& b);
 inline r32 dot(const v2& a, const v2& b);
 

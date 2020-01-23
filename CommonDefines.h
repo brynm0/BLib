@@ -72,7 +72,6 @@
 
 #define LOOP(induction, end) for(u32 induction = 0; induction < end; induction++) 
 #define POOL(induction, initial) for(u32 induction = initial; induction >= 0; induction--)
-#define REPEAT(end) for (u32 i = 0; i < end; i++)
 
 
 #if 0 

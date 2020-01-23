@@ -10,7 +10,9 @@ struct RandomSeries
 flocal u32 xOrShift32(RandomSeries* series);
 flocal r32 randomUnilateral(RandomSeries* series);
 flocal v3 randomUnilateralV3(RandomSeries* series);
-
+flocal inline r32 math_min(r32 a, r32 b);
+flocal inline r32 math_max(r32 a, r32 b);
+flocal inline r32 clamp_r32(r32 a, r32 low, r32 high);
 flocal inline r32 sqDist(const v3& a, const v3& b);
 flocal inline r32 sqDist(const v2& a, const v2& b);
 flocal inline r32 fast_fabs(r32 x);

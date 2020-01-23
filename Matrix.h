@@ -8,6 +8,7 @@
 
 #include "CommonDefines.h"
 #include "Vector.h"
+#include "VectorMath.h"
 #include <math.h>
 #include <stdio.h>
 struct m4
