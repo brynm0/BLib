@@ -162,7 +162,6 @@ flocal inline r32 degrees(r32 radians)
 }
 #endif
 
-
 int point_in_polygon(u32 nvert, v2* poly, v2 test)
 {
     r32 testx = test.x;
