@@ -8,6 +8,16 @@
 #include <math.h>
 #include "MathUtils.h"
 
+flocal b32 is_inside_quad(v2 top_left, v2 bottom_right, v2 point)
+{
+    if (point.x > top_left.x && point.y < bottom_right.y &&
+        point.x < bottom_right.x && point.y > top_left.y)
+    {
+        return true;
+    }
+    return false;
+}
+
 flocal inline r32 fast_fabs(r32 x)
 {
     int casted = *(int*) &x;
@@ -78,18 +88,18 @@ mix(r32 x, r32 y, r32 a)
 }
 
 flocal inline r32
-blerp(float c00,
-      float c10,
-      float c01,
-      float c11,
-      float tx,
-      float ty)
+bilinear_mix(float c00,
+             float c10,
+             float c01,
+             float c11,
+             float tx,
+             float ty)
 {
     return mix(mix(c00, c10, tx), mix(c01, c11, tx), ty);
 }
 
 flocal inline r32
-smin(r32 a, r32 b, r32 k)
+smooth_min(r32 a, r32 b, r32 k)
 {
     r32 h = clamp_r32( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
     return mix( b, a, h ) - k*h*(1.0-h);
