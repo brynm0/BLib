@@ -8,6 +8,8 @@
 #include <math.h>
 #include "MathUtils.h"
 
+#include "sse_include.h"
+
 flocal b32 is_inside_quad(v2 top_left, v2 bottom_right, v2 point)
 {
     if (point.x > top_left.x && point.y < bottom_right.y &&
@@ -249,7 +251,30 @@ flocal u32 clip_polygon(u32 clip_begin, u32 clip_end, u32 num_pts, v2* polygon, 
     }
     else
     {
-        
+
+        if (clip_end < clip_begin)
+        {
+            for (int i = clip_end; i < clip_begin+1; ++i)
+            {
+                if (i == clip_end)
+                {
+                    out[ctr++] = intersections[1];   
+                }
+                else if (i == clip_begin)
+                {
+                    out[ctr++] = intersections[0];
+                    out[ctr++] = polygon[i];   
+                }
+                else
+                {
+                    out[ctr++] = polygon[i];   
+                }
+                
+            }
+
+        }
+        else
+        {
         for (int i = clip_end; i < num_pts; i++)
         {
             if (i == clip_end)
@@ -274,6 +299,7 @@ flocal u32 clip_polygon(u32 clip_begin, u32 clip_end, u32 num_pts, v2* polygon, 
             {
                 out[ctr++] = polygon[i];   
             }
+        }
         }
     }
     return ctr;
