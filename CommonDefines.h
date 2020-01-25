@@ -54,7 +54,7 @@
 #define GIGABYTES(number) ((MEGABYTES(number) * 1024))
 
 #define ACCESS_PTR(ptr, idx, type) (&(((type *)ptr)[idx]))
-#define ACCESS_VAL(ptr, idx, type) (((type*)ptr)[idx])
+#define ACCESS_VAL(ptr, idx, type) (((type*)(ptr))[idx])
 #define ASSIGN_PTR(ptr, val) if ((ptr)) { *ptr = (val); }
 
 //Only works for constant arrays, not pointers
