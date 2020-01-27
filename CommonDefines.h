@@ -89,6 +89,21 @@ void* safe_realloc(void* src, size_t size, size_t original)
         return nullptr;
     }
 }
+
 #define realloc safe_realloc
 #endif
+
+b32 streq(char* a, char* b, u32 b_len)
+{
+    LOOP(i, b_len)
+    {
+        if (a[i] != b[i])
+        {
+            return false;
+        }   
+    }
+    return true;
+}
+
+
 #endif // !COMMON_DEFINES_H

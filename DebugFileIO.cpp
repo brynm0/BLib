@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+
 flocal void*
 read_entire_file_binary(char* path)
 {
@@ -25,21 +26,38 @@ read_entire_file_binary(char* path)
     return result;
 }
 
+flocal void*
+read_entire_file_binary(FILE* f)
+{
+    void* result;
+    if (f)
+    {
+        fseek(f, 0, SEEK_END);
+        size_t file_size = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        result = (char*)malloc(file_size);
+        fread(result, file_size, 1, f);
+    }
+    return result;
+}
+
 flocal char*
-readEntireFileText(char* path)
+read_entire_file_text(char* path, u64* ret)
 {
     char* result = 0;
     FILE* file = fopen(path, "rb");
+    u64 fs;
     if (file)
     {
         fseek(file, 0, SEEK_END);
-        size_t fileSize = ftell(file);
+        fs = ftell(file);
         fseek(file, 0, SEEK_SET);
-        result = (char*)malloc(fileSize + 1);
-        fread(result, fileSize, 1, file);
-        result[fileSize] = 0;
+        result = (char*)malloc(fs + 1);
+        fread(result, fs, 1, file);
+        result[fs] = 0;
         fclose(file);
     }
+    if (ret) { *ret = fs; }
     return result;
 }
 
