@@ -33,7 +33,8 @@
 #define ASCII_START 32
 #define ASCII_END 127
 #define TEXT_SIZE_MIN 0.04f
-
+#define STATIC_UI_TEXT_SIZE_MIN (32.0f / 1080.0f) * 2.0f//32 pixels @ 1080p https://youtu.be/fVFgSkZtCio
+#define TRANSIENT_UI_TEXT_SIZE_MIN (46.0f / 1080.0f) * 2.0f//46 pixels @ 1080p https://youtu.be/fVFgSkZtCio
 
 #define MAX_UBOS (500000)
 #define VBO_ELEMENTS (1000000)
