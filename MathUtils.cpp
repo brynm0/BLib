@@ -193,6 +193,7 @@ flocal u32 get_furthest_v_in_d(u32 num_pts, v2* pts, v2 dir)
 {
     r32 record_dot = -R32_MAX;
     u32 record_pt = -1;
+    dir = normalize(dir);
     LOOP(i, num_pts)
     {
         r32 new_dot = dot(dir,pts[i]);
@@ -303,4 +304,14 @@ flocal u32 clip_polygon(u32 clip_begin, u32 clip_end, u32 num_pts, v2* polygon, 
         }
     }
     return ctr;
+}
+
+flocal inline b32 eps_equals(r32 a, r32 b, r32 eps)
+{
+    if (a > (b - eps) &&
+        a < (b + eps))
+    {
+        return true;
+    }
+    return false;
 }

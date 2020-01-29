@@ -5,7 +5,7 @@
    $Revision: $
    $Creator: Bryn Murrell $
    ======================================================================== */
-#include "CommonDefines.h"
+#include "blib_utils.h"
 flocal inline i64
 get_current_time()
 {

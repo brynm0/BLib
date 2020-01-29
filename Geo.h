@@ -3,7 +3,7 @@
 #include "flat_hash_map.hpp"
 #include <map>
 #include "Vertex.h"
-#include "CommonDefines.h"
+#include "blib_utils.h"
 #include "w:\AgentBasedFramework\Code\QuadTree.h"
 #include "w:\AgentBasedFramework\Code\OctTree.h"
 

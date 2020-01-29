@@ -4,7 +4,7 @@
    $Revision: $
    $Creator: Bryn Murrell $
    ======================================================================== */
-#include "CommonDefines.h"
+#include "blib_utils.h"
 #include "Vector.h"
 #include "Matrix.h"
 

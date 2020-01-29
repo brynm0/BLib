@@ -1,7 +1,7 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "CommonDefines.h"
+#include "blib_utils.h"
 #include "MathUtils.h"
 #include "Vector.h"
 #include "Vector.cpp"

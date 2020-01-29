@@ -11,7 +11,7 @@
 #define USE_SSE2
 #include "sse_mathfun_extension.h"
 #include <assert.h>
-#include "CommonDefines.h"
+#include "blib_utils.h"
 #include "Vector.h"
 #define LANE_WIDTH 8
 struct lane_r32

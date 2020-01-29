@@ -42,9 +42,9 @@ cross(const v2& a, const v2& b)
 //NOTE projects A onto B
 flocal inline v2 project(v2 a, v2 b)
 {
-    r32 d = dot(a,b);
-    r32 sq_mag = sqLen(b);
-    return (d / sq_mag) * b;
+    v2 b_norm = normalize(b);
+    float scalar_projection = dot(a, b_norm);
+    return scalar_projection * b_norm;
 }
 
 #if 1
@@ -55,6 +55,13 @@ flocal v3 setMag (v3 toSet, const r32& target)
     return toSet * ratio;
 }
 #endif
+
+flocal v2 setMag (v2 toSet, const r32& target)
+{
+    r32 len = sqrtf(sqLen(toSet));
+    r32 ratio = target / len;
+    return toSet * ratio;
+}
 
 flocal void limit (v3* toLimit, const r32& limiter)
 {
@@ -248,7 +255,7 @@ flocal inline v3 barycentric_coords(v3 a, v3 b, v3 c, v3 p)
 
 flocal v2 line_intersection(v2 start1, v2 end1, v2 start2, v2 end2, r32* param)
 {
-    const r32 eps = 0.00001f;
+    const r32 eps = 0.000000001f;
       r32 ax = end1.arr[0] - start1.arr[0];
     r32 ay = end1.arr[1] - start1.arr[1];
 
@@ -281,7 +288,7 @@ flocal v2 line_intersection(v2 start1, v2 end1, v2 start2, v2 end2, r32* param)
     }
 }
 
-flocal inline v3 lineCP(v3 a, v3 b, v3 query)
+flocal inline v3 line_cp(v3 a, v3 b, v3 query)
 {
     v3 aToB = b - a;
     v3 aToQ = query - a;
@@ -292,7 +299,7 @@ flocal inline v3 lineCP(v3 a, v3 b, v3 query)
     return a + (aToB * t);
 }
 
-flocal inline v2 lineCP(v2 a, v2 b, v2 query)
+flocal inline v2 line_cp(v2 a, v2 b, v2 query)
 {
     v2 aToB = b - a;
     v2 aToQ = query - a;
@@ -301,6 +308,31 @@ flocal inline v2 lineCP(v2 a, v2 b, v2 query)
     if (t > 1.0f) {t = 1;}
     else if (t < 0.0f) {t = 0;}
     return a + (aToB * t);
+}
+
+flocal inline v2 quad_cp(v2* quad, v2 query, u32* record_index_out)
+{
+    v2 rec;
+    r32 rec_dist = R32_MAX;
+    u32 rec_id = 0;
+    LOOP(i, 4)
+    {
+        u32 i_next = i != 3 ? i+1 : 0;
+        v2 cp = line_cp(quad[i], quad[i_next], query);
+        r32 dist = sqDist(cp, query);
+        if (dist < rec_dist)
+        {
+            rec_dist = dist;
+            rec = cp;
+            rec_id = i;
+        }
+        
+    }
+    if (record_index_out)
+    {
+        *record_index_out = rec_id;
+    }
+    return rec;
 }
 
 flocal inline b32 point_is_on_line(v2 a, v2 b, v2 query)
@@ -313,7 +345,7 @@ flocal inline b32 point_is_on_line(v2 a, v2 b, v2 query)
     {
         return false;
     }
-    r32 distance = sqDist(lineCP(a,b,query),query);
+    r32 distance = sqDist(line_cp(a,b,query),query);
     if (distance < 0.001f)
     {
         return true;
@@ -394,6 +426,16 @@ flocal inline v2 quad_line_intersection(v2 line_a, v2 line_b, v2 top_left, v2 bo
         intersection_result = intersection;
     }
     return intersection_result;
+}
+
+flocal inline b32 eps_equals(v2 a, v2 b, r32 eps)
+{
+    if (a.x < b.x + eps && a.x > b.x - eps &&
+        a.y < b.y + eps && a.y > b.y - eps)
+    {
+        return true;
+    }
+    return false;
 }
 
 #define VECTORMATH_H

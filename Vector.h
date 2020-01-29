@@ -5,7 +5,7 @@
    $Revision: $
    $Creator: Bryn Murrell $
    ======================================================================== */
-#include "CommonDefines.h"
+#include "blib_utils.h"
 //#include "MathUtils.h"
 
 struct v2

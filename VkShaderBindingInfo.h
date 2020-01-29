@@ -8,7 +8,7 @@
 #define VK_SHADER_BINDING_INFO_H
 
 #pragma pack(push,1)
-#include "CommonDefines.h"
+#include "blib_utils.h"
 struct ShaderBindingInfo
 {
     VkDescriptorType type;
