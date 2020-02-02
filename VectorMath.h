@@ -123,7 +123,7 @@ b32 ray_line_seg_x(v2 ro,
                    v2 a,
                    v2 b, r32* t, v2* intersection_pt)
 {
-    ASSERT(sqLen(rd) == 1.0f, "Ray dir must be normalised before passing to ray_line_seg_x")
+    ASSERT(sqLen(rd) == 1.0f, "Ray dir must be normalised before passing to ray_line_seg_x");
     v2 v_a = ro - a;
     v2 v_b = b - a;
     v2 v_c = v(-rd.y, rd.x);
