@@ -52,6 +52,13 @@ flocal inline v2 mapVec(v2 input,
     return {map(input.x, xfroml, xfromh, xtol, xtoh), map(input.y, yfroml, yfromh, ytol, ytoh)};
 }
 
+flocal inline v2 pixel_dim_to_screen_space(uiv2 screen_dim, uiv2 px)
+{
+    r32 x = map(px.x, 0, screen_dim.x, 0, 2);
+    r32 y = map(px.y, 0, screen_dim.y, 0, 2); 
+    return {x,y};
+}
+
 flocal inline r32
 math_max(r32 a, r32 b)
 {

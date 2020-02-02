@@ -8,6 +8,48 @@
 #include "blib_utils.h"
 //#include "MathUtils.h"
 
+struct uiv2
+{
+    union
+    {
+        struct
+        {
+            u32 x;
+            u32 y;
+        };
+        struct
+        {
+            u32 r;
+            u32 g;
+        };
+        struct
+        {
+            u32 u;
+            u32 v;
+        };
+        struct
+        {
+            u32 arr[2];
+        };
+    };
+     
+    inline uiv2 operator+=(const u32& b)
+    {
+        *this = {this->x + b, this->y + b};
+        return *this;
+    }
+    inline uiv2 operator+=(const uiv2& b)
+    {
+        *this = {this->x + b.x, this->y + b.y};
+        return *this;
+    }
+};
+
+flocal uiv2 uint_vec(u32 a, u32 b)
+{
+    return {a,b};
+}
+
 struct v2
 {
     
