@@ -88,9 +88,9 @@ flocal inline void append_to_len_string(len_string* l, char* str, u32 len)
 flocal inline void append_to_len_string(len_string* l, char* str)
 {
     u32 in_str_len = strlen(str);
-    if (in_str_len + l->string_len > l->buffer_len)
+    if (in_str_len + l->string_len + 1 > l->buffer_len)
     {
-        reallocate_len_string(l, in_str_len + l->string_len + 1);
+        reallocate_len_string(l, in_str_len + l->string_len + 2);
     }
     for (int i = 0; i < in_str_len; i++)
     {
@@ -152,6 +152,7 @@ flocal inline u32 find_first_occurence_of_char(const len_string& str, char c)
     return -1;
     
 }
+
 
 #define LEN_STRING_H
 #endif

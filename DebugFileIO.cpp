@@ -10,30 +10,32 @@
 #include <vector>
 
 flocal void*
-read_entire_file_binary(char* path)
+read_entire_file_binary(char* path, u64* num_bytes)
 {
     void* result;
     FILE* file = fopen(path, "rb");
     if (file)
     {
         fseek(file, 0, SEEK_END);
-        size_t fileSize = ftell(file);
+        size_t file_size = ftell(file);
+        if (num_bytes) {*num_bytes = file_size;}
         fseek(file, 0, SEEK_SET);
-        result = (char*)malloc(fileSize);
-        fread(result, fileSize, 1, file);
+        result = (char*)malloc(file_size);
+        fread(result, file_size, 1, file);
         fclose(file);
     }
     return result;
 }
 
 flocal void*
-read_entire_file_binary(FILE* f)
+read_entire_file_binary(FILE* f, u64* num_bytes)
 {
     void* result;
     if (f)
     {
         fseek(f, 0, SEEK_END);
         size_t file_size = ftell(f);
+        if (num_bytes) {*num_bytes = file_size;}
         fseek(f, 0, SEEK_SET);
         result = (char*)malloc(file_size);
         fread(result, file_size, 1, f);
@@ -88,7 +90,7 @@ stringLen(char* string)
     }
     return ctr;
 }
-
+#if 0 
 flocal std::vector<char> read_file(const std::string& filename)
 {
 	std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -108,3 +110,4 @@ flocal std::vector<char> read_file(const std::string& filename)
 	file.close();
 	return buffer;
 }
+#endif

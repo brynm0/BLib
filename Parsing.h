@@ -7,6 +7,7 @@ enum TokenType
     TOKEN_COMMA,
     //TODO distinguish between assignment and equivalence
     TOKEN_EQUALS,
+    TOKEN_ASSIGNMENT,
     TOKEN_IDENTIFIER,
     TOKEN_PAREN_OPEN,
     TOKEN_PAREN_CLOSE,
@@ -24,6 +25,10 @@ enum TokenType
     TOKEN_RSHIFT,
     TOKEN_LESSER_THAN,
     TOKEN_GREATER_THAN,
+    TOKEN_POINTER_ACCESS,
+    TOKEN_OR,
+    TOKEN_OR_ASSIGNMENT,
+    TOKEN_OR_BITWISE,
     TOKEN_END
 };
 
@@ -70,14 +75,12 @@ eatAllWhitespace(Tokenizer* tok)
         }
         else if (tok->at[0] == '/' && tok->at[1] == '*')
         {
+            tok->at += 2;
             while (tok->at[0] && (tok->at[0] != '*' && tok->at[1] != '/'))
             {
                 tok->at++;
             }
-            if(tok->at[0] != '*')
-            {
-                tok->at += 2;
-            }
+            tok->at+=2;
         }
         else
         {
@@ -112,20 +115,7 @@ lenStringToInt(char* c, u32 len)
     free(buf);
     return out;
 }
-#if 0 
-flocal inline Token
-parse_number_token(Tokenizer* tokenizer)
-{
-    // we need to parse _basic_ arithmetic expressions here
-    while(!isWhitespace(tokenizer->at[0]) && tokenizer->at[0] != ')')
-    {
-        tokenizer->at++;
-    }
-    t.type = TOKEN_NUMBER;
-    t.length = tokenizer->at - t.text;
-    
-}
-#endif
+
 Token getToken(Tokenizer* tokenizer)
 {
     eatAllWhitespace(tokenizer);
@@ -142,8 +132,20 @@ Token getToken(Tokenizer* tokenizer)
         } break;
         case '=' :
         {
-            t.type = TOKEN_EQUALS;
-            tokenizer->at++;
+            if (tokenizer->at[1] == '=')
+            {
+                t.type = TOKEN_EQUALS;
+                t.length = 2;
+                t.text = "==";
+                tokenizer->at+=2;   
+            }
+            else
+            {
+                t.type = TOKEN_ASSIGNMENT;
+                t.length = 1;
+                t.text = "=";
+                tokenizer->at++;   
+            }
         } break;
         case '(' :
         {
@@ -250,7 +252,48 @@ Token getToken(Tokenizer* tokenizer)
                 tokenizer->at++;
             }
         } break;
+        case '-' :
+        {
+            if (tokenizer->at[1] == '>')
+            {
+                t.type = TOKEN_POINTER_ACCESS;
+                t.text = "->";
+                t.length = 2;
+                tokenizer->at+=2;
+            }
+            else
+            {
+                tokenizer->at++;
+                t.type = TOKEN_UNKNOWN;
+                t.length = 0;
+                t.text = nullptr;
+            }
             
+        } break;
+        case '|' :
+        {
+            if (tokenizer->at[1] == '|')
+            {
+                t.type = TOKEN_OR;
+                t.text = "||";
+                t.length = 2;
+                tokenizer->at+=2;
+            }
+            else if (tokenizer->at[1] == '=')
+            {
+                t.type = TOKEN_OR_ASSIGNMENT;
+                t.text = "|=";
+                t.length = 2;
+                tokenizer->at+=2;
+            }
+            else
+            {
+                t.type = TOKEN_OR_BITWISE;
+                t.text = "|";
+                t.length = 1;
+                tokenizer->at++;
+            }
+        }break;
         case 0 :
         {
             t.type = TOKEN_END;
@@ -300,7 +343,8 @@ Token peek_tok(Tokenizer tokenizer)
 {
     return getToken(&tokenizer);
 }
-    
+
+#if 0     
 flocal b32 strEq(char* a, char* b)
 {
     char* c = a;
@@ -315,11 +359,17 @@ flocal b32 strEq(char* a, char* b)
     }
     return true;
 }
+#endif
 
 flocal inline b32
 tokenEquals(const Token& a, const Token& b)
 {
-    return (a.type == b.type && a.length == b.length && strEq(a.text, b.text));
+    return (a.type == b.type && a.length == b.length && streq(a.text, b.text, b.length));
+}
+
+b32 operator==(const Token& a, const Token& b)
+{
+    return tokenEquals(a,b);
 }
 
 flocal inline
@@ -327,4 +377,158 @@ Token token(TokenType type, u32 len, char* text)
 {
     return {type, len, text};
 }
+
+
+flocal inline b32 is_cpp_or_h_file(char* file)
+{
+    const char* h = ".h";
+    const char* cpp = ".cpp";
+    char* c = file;
+    while (*c != '.')
+    {
+        c++;
+    }
+    if (c)
+    {
+        if (strcmp(c,h))
+        {
+            return true;
+        }
+        if (strcmp(c,cpp))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+flocal b32 find_next_enum_in_file(char** file)
+{
+    Tokenizer tok = {};
+    tok.at = *file;
+    b32 should_break = false;
+    b32 ret_val = false;
+    while (!should_break)
+    {
+        Token t = getToken(&tok);
+        if (tokenEquals(token(TOKEN_IDENTIFIER, 4, "enum"), t))
+        {
+            should_break = true;
+            ret_val = true;
+        }
+        if (tokenEquals(token(TOKEN_END, 0, "\0"), t))
+        {
+            
+            should_break = true;
+            ret_val = false;
+        }
+    }
+    
+    *file = tok.at;
+    return ret_val;
+}
+
+flocal b32 find_next_token_in_file(char** file, Token query)
+{
+    Tokenizer tok = {};
+    tok.at = *file;
+    b32 should_break = false;
+    b32 ret_val = false;
+    while (!should_break)
+    {
+        Token t = getToken(&tok);
+        if (query == t)
+        {
+            should_break = true;
+            ret_val = true;
+        }
+        if (token(TOKEN_END, 0, "\0") == t)
+        {
+            
+            should_break = true;
+            ret_val = false;
+        }
+    }
+    
+    *file = tok.at;
+    return ret_val;
+}
+
+flocal b32 find_next_tokens_in_file(char** file, Token* query, u32 count)
+{
+    Tokenizer tok = {};
+    tok.at = *file;
+    b32 should_break = false;
+    b32 ret_val = false;
+    while (!should_break)
+    {
+        Token t = getToken(&tok);
+        LOOP(i, count)
+        {
+            if (query[i] == t)
+            {
+                should_break = true;
+                ret_val = true;
+            }
+        }
+        if (token(TOKEN_END, 0, "\0") == t)
+        {
+            
+            should_break = true;
+            ret_val = false;
+        }
+    }
+    
+    *file = tok.at;
+    return ret_val;
+}
+
+flocal b32 find_next_id_in_file(char** file, char* text, u32 len)
+{
+    Tokenizer tok = {};
+    tok.at = *file;
+    b32 should_break = false;
+    b32 ret_val = false;
+    while (!should_break)
+    {
+        Token t = getToken(&tok);
+        if (tokenEquals(token(TOKEN_IDENTIFIER, len, text), t))
+        {
+            should_break = true;
+            ret_val = true;
+        }
+        if (tokenEquals(token(TOKEN_END, 0, "\0"), t))
+        {
+            
+            should_break = true;
+            ret_val = false;
+        }
+    }
+    
+    *file = tok.at;
+    return ret_val;
+}
+
+flocal b32 find_next_token(Tokenizer* tok, Token query)
+{
+    b32 should_break = false;
+    b32 ret_val = false;
+    while (!should_break)
+    {
+        Token t = getToken(tok);
+        if (query == t)
+        {
+            should_break = true;
+            ret_val = true;
+        }
+        if (tokenEquals(token(TOKEN_END, 0, "\0"), t))
+        {
+            
+            should_break = true;
+            ret_val = false;
+        }
+    }
+    return ret_val;
+}
+
 #endif

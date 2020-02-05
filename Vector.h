@@ -177,6 +177,16 @@ struct v4
             r32 a;
         };
     };
+    inline v4 operator-=(const v4& b)
+    {
+        *this = {this->x - b.x, this->y - b.y, this->z - b.z, this->z - b.z};
+        return *this;
+    }
+    inline v4 operator+=(const v4& b)
+    {
+        *this = {this->x + b.x, this->y + b.y, this->z + b.z, this->w + b.w};
+        return *this;
+    }
 };
 
 inline b32
@@ -440,6 +450,7 @@ flocal inline b32 eps_equals(const v3& a, const v3& b, r32 eps)
 
 inline v3 normalize(const v3& a);
 inline v2 normalize(const v2& a);
+
 inline r32 dot(const v3& a, const v3& b);
 inline r32 dot(const v2& a, const v2& b);
 

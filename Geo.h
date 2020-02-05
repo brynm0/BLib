@@ -2,7 +2,7 @@
 #include <vector>
 #include "flat_hash_map.hpp"
 #include <map>
-#include "Vertex.h"
+
 #include "blib_utils.h"
 #include "w:\AgentBasedFramework\Code\QuadTree.h"
 #include "w:\AgentBasedFramework\Code\OctTree.h"
@@ -25,18 +25,16 @@ struct EntityMesh
     u32* nIndices;
     
     u32 vertexCount;
-    v3* positions;
+    v4* positions;
 
     u32 paramCount;
     v2* parameters;
 
     u32 colorCount;
-    v3* colors;
+    v4* colors;
 
     u32 normalCount;
-    v3* normals;
-
-    Vertex* vertices;
+    v4* normals;
     
     QuadTree* paramTree;
     OctTree* vertexTree;
@@ -46,15 +44,16 @@ struct EntityMesh
 struct Mesh
 {
     MeshType type;
-	std::vector<v3> pos;
-    std::vector<v3> colors;
+	std::vector<v4> pos;
+    std::vector<v4> colors;
+	std::vector<v4> normals;
 	std::vector<v2> coords;
-	std::vector<v3> normals;
 	std::vector<u32> vIndices;
 	std::vector<u32> tIndices;
 	std::vector<u32> nIndices;
 };
 
+#if 0 
 struct Edge
 {
     Vertex a;
@@ -97,8 +96,9 @@ struct Curve
     //TODO(Bryn):
     //Some object space spatial partitioning for edges should be easy
     //Done with a preprocessor
-    ska::flat_hash_map<Edge, u32> edgeMap;
+    std::ska::flat_hash_map<Edge, u32> edgeMap;
 };
+#endif
 
 #define GEO_H
 #endif

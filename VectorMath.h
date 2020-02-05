@@ -438,5 +438,12 @@ flocal inline b32 eps_equals(v2 a, v2 b, r32 eps)
     return false;
 }
 
+flocal inline v3 rotate(v3 v, r32 th, v3 axis)
+{
+    double cos_th = cosf(th);
+    double sin_th = sinf(th);
+    return (v * cos_th) + (cross(axis, v) * sin_th) + (axis * dot(axis, v)) * (1 - cos_th);
+}
+
 #define VECTORMATH_H
 #endif

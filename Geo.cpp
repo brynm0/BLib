@@ -26,58 +26,53 @@ quad(r32 aspectRatio, v3 pos, v3 normal, v3 size)
 
     size.x /= 2.0f;
     size.y /= 2.0f;
+
+    v4 a_pos,b_pos,c_pos,d_pos;
+    v4 a_normal,b_normal,c_normal,d_normal;
+    v2 a_tex_coord,b_tex_coord,c_tex_coord,d_tex_coord;
     
-    Vertex v1 = {};
-    Vertex v2 = {};
-    Vertex v3 = {};
-    Vertex v4 = {};
     size.x *= aspectRatio;
-    v1.pos = localX * -size.x + localY * size.y;
-    v2.pos = localX * -size.x + localY * -size.y;
-    v3.pos = localX * size.x  + localY * size.y;
-    v4.pos = localX * size.x  + localY * -size.y;
+    a_pos = v(localX * -size.x + localY * size.y, 1);
+    b_pos = v(localX * -size.x + localY * -size.y, 1);
+    c_pos = v(localX * size.x  + localY * size.y, 1);
+    d_pos = v(localX * size.x  + localY * -size.y, 1);
 
-    v1.pos += pos;
-    v2.pos += pos;
-    v3.pos += pos;
-    v4.pos += pos;
+    a_pos += v(pos, 1);
+    b_pos += v(pos, 1);
+    c_pos += v(pos, 1);
+    d_pos += v(pos, 1);
 
-    v1.color = v(1,1,1);
-    v2.color = v(1,1,1);
-    v3.color = v(1,1,1);
-    v4.color = v(1,1,1);
+    a_normal = v(normal, 1);
+    b_normal = v(normal, 1);
+    c_normal = v(normal, 1);
+    d_normal = v(normal, 1);
 
-    v1.normal = normal;
-    v2.normal = normal;
-    v3.normal = normal;
-    v4.normal = normal;
-
-    v1.texCoord = v(0,0);
-    v2.texCoord = v(0,1);
-    v3.texCoord = v(1,0);
-    v4.texCoord = v(1,1);
+    a_tex_coord = v(0,0);
+    b_tex_coord = v(0,1);
+    c_tex_coord = v(1,0);
+    d_tex_coord = v(1,1);
     
     Mesh m = {};
 
-    m.pos.push_back(v1.pos);
-    m.pos.push_back(v2.pos);
-    m.pos.push_back(v3.pos);
-    m.pos.push_back(v4.pos);
+    m.pos.push_back(a_pos);
+    m.pos.push_back(b_pos);
+    m.pos.push_back(c_pos);
+    m.pos.push_back(d_pos);
     
-    m.colors.push_back(v1.color);
-    m.colors.push_back(v2.color);
-    m.colors.push_back(v3.color);
-    m.colors.push_back(v4.color);
+    m.colors.push_back(v(1,1,1,1));
+    m.colors.push_back(v(1,1,1,1));
+    m.colors.push_back(v(1,1,1,1));
+    m.colors.push_back(v(1,1,1,1));
     
-    m.normals.push_back(v1.normal);
-    m.normals.push_back(v2.normal);
-    m.normals.push_back(v3.normal);
-    m.normals.push_back(v4.normal);
+    m.normals.push_back(a_normal);
+    m.normals.push_back(b_normal);
+    m.normals.push_back(c_normal);
+    m.normals.push_back(d_normal);
 
-    m.coords.push_back(v1.texCoord);
-    m.coords.push_back(v2.texCoord);
-    m.coords.push_back(v3.texCoord);
-    m.coords.push_back(v4.texCoord);
+    m.coords.push_back(a_tex_coord);
+    m.coords.push_back(b_tex_coord);
+    m.coords.push_back(c_tex_coord);
+    m.coords.push_back(d_tex_coord);
     
     m.vIndices.push_back(0);
     m.vIndices.push_back(2);
@@ -110,10 +105,10 @@ loadMesh(char* path, b32 swapYZ)
     out.type = MESH_TYPE_TRIANGLES;
     FILE* f = fopen(path, "r");
     char buf[256];
-    std::vector<v3> positions = {};
-    std::vector<v3> normals = {};
+    std::vector<v4> positions = {};
+    std::vector<v4> normals = {};
     std::vector<v2> texCoords = {};
-    std::vector<v3> colors = {};
+    std::vector<v4> colors = {};
     while (fgets(buf, 256, f))
     {
         if (buf[0] == '#' || buf[0] == 'm' || buf[0] == 'u')
@@ -231,7 +226,7 @@ loadSDF(char* path)
     fclose(f);
 	return out;
 }
-
+#if 0 
 flocal Edge
 edge(const Vertex& a, const Vertex& b)
 {
@@ -248,7 +243,7 @@ edge(const Vertex& a, const Vertex& b)
     }
     return out;
 }
-
+#endif
 flocal std::vector<v2>
 loadPosFile(char* path)
 {
@@ -297,7 +292,7 @@ flocal b32 writeMeshFile(const EntityMesh& m, char* path)
 
     for (u32 i = 0; i < m.vertexCount; i++)
     {
-        const v3* current = &m.positions[i];
+        const v4* current = &m.positions[i];
         fprintf(f, "v %.10f %.10f %.10f\n", current->x, current->y, current->z);
     }
     for (u32 i = 0; i < m.paramCount; i++)
@@ -308,7 +303,7 @@ flocal b32 writeMeshFile(const EntityMesh& m, char* path)
 
     for (u32 i = 0; i < m.normalCount; i++)
     {
-        const v3* current = &m.normals[i];
+        const v4* current = &m.normals[i];
         fprintf(f, "vn %.10f %.10f %.10f\n", current->x, current->y, current->z);
         
     }
@@ -342,15 +337,15 @@ flocal b32 writeMeshFile(const EntityMesh& m, char* path)
     
     
 }
-
+#if 0 
 flocal bool castMesh(v3 ro, v3 rd, const EntityMesh& mesh, v3* intersection)
 {
     v3 result = {};
     for (u32 i = 0; i < mesh.indexCount; i+=3)
     {
-        v3 a = mesh.positions[mesh.vIndices[i  ]];
-        v3 b = mesh.positions[mesh.vIndices[i+1]];
-        v3 c = mesh.positions[mesh.vIndices[i+2]];
+        v3 a = xyz(mesh.positions[mesh.vIndices[i  ]]);
+        v3 b = xyz(mesh.positions[mesh.vIndices[i+1]]);
+        v3 c = xyz(mesh.positions[mesh.vIndices[i+2]]);
         if (ray_triangle_x(ro, rd, a, b, c, &result))
         {
             *intersection = result;
@@ -367,9 +362,9 @@ flocal v3* castMesh(v3 ro, v3 rd, const EntityMesh& mesh, u32 maxHits, u32* hitC
     u32 numHits = 0;
     for (u32 i = 0; i < mesh.indexCount; i+=3)
     {
-        v3 a = mesh.positions[mesh.vIndices[i  ]];
-        v3 b = mesh.positions[mesh.vIndices[i+1]];
-        v3 c = mesh.positions[mesh.vIndices[i+2]];
+        v3 a = xyz(mesh.positions[mesh.vIndices[i  ]]);
+        v3 b = xyz(mesh.positions[mesh.vIndices[i+1]]);
+        v3 c = xyz(mesh.positions[mesh.vIndices[i+2]]);
         v3 res = {};
         if (ray_triangle_x(ro, rd, a, b, c, &res))
         {
@@ -379,7 +374,7 @@ flocal v3* castMesh(v3 ro, v3 rd, const EntityMesh& mesh, u32 maxHits, u32* hitC
     *hitCount = numHits;
     return result;
 }
-
+#endif
 flocal EntityMesh convertMeshToEntityMesh(const Mesh& m, v3 color)
 {
 
@@ -391,10 +386,10 @@ flocal EntityMesh convertMeshToEntityMesh(const Mesh& m, v3 color)
     out.paramCount = m.coords.size();
     out.normalCount = m.normals.size();
     out.colorCount = m.colors.size();
-    out.positions = (v3*)malloc(sizeof(v3) * out.vertexCount);
+    out.positions = (v4*)malloc(sizeof(v4) * out.vertexCount);
     out.parameters = (v2*)malloc(sizeof(v2) * out.paramCount);
-    out.colors = (v3*)malloc(sizeof(v3) * out.colorCount);
-    out.normals = (v3*)malloc(sizeof(v3) * out.normalCount);
+    out.colors = (v4*)malloc(sizeof(v4) * out.colorCount);
+    out.normals = (v4*)malloc(sizeof(v4) * out.normalCount);
     out.vIndices = (u32*)malloc(sizeof(u32) * out.indexCount);
     out.tIndices = (u32*)malloc(sizeof(u32) * out.indexCount);
     out.nIndices = (u32*)malloc(sizeof(u32) * out.indexCount);
@@ -421,17 +416,5 @@ flocal EntityMesh convertMeshToEntityMesh(const Mesh& m, v3 color)
         out.normals[idx] = m.normals[idx];
     }
 
-    out.vertices = (Vertex*)malloc(sizeof(Vertex)*out.vertexCount);
-    
-    for (u32 i = 0; i < out.indexCount; i++)
-    {
-        u32 vidx = out.vIndices[i];
-        u32 tidx = out.tIndices[i];
-        u32 nidx = out.nIndices[i];
-        out.vertices[vidx] = {out.positions[vidx],
-                              color,
-                              out.normals[nidx],
-                              out.parameters[tidx]};
-    }
     return out;                                      
 }
