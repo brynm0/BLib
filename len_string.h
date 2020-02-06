@@ -108,6 +108,26 @@ flocal inline len_string l_string(char* str)
     return ret;
 }
 
+flocal inline len_string l_string(std::string str)
+{
+    u32 buffer_len = str.length()+2;
+    len_string ret = l_string(buffer_len);
+
+    LOOP(i, str.length()+2)
+    {
+        if (i == str.length() + 1)
+        {
+            ret.str[i] = 0;
+        }
+        else
+        {
+            ret.str[i] = str[i];
+        }
+    }
+    
+    return ret;
+}
+
 flocal inline len_string l_string(len_string s)
 {
     len_string ret = l_string(s.buffer_len);
