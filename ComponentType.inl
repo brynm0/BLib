@@ -350,6 +350,10 @@ flocal len_string print_enum_name_ComponentType(u32 field)
 	{
 		append_to_len_string(&s, "COMPONENT_TYPE_PLAYER_TONGUE\n");
 	}
+	if ( COMPONENT_TYPE_CLICKABLE_GIZMO & field )
+	{
+		append_to_len_string(&s, "COMPONENT_TYPE_CLICKABLE_GIZMO\n");
+	}
 	return s;
 }
 flocal len_string print_enum_name_ComponentType_using_equals(u32 field)
@@ -462,6 +466,10 @@ flocal len_string print_enum_name_ComponentType_using_equals(u32 field)
 	if ( COMPONENT_TYPE_PLAYER_TONGUE == field )
 	{
 		append_to_len_string(&s, "COMPONENT_TYPE_PLAYER_TONGUE");
+	}
+	if ( COMPONENT_TYPE_CLICKABLE_GIZMO == field )
+	{
+		append_to_len_string(&s, "COMPONENT_TYPE_CLICKABLE_GIZMO");
 	}
 	return s;
 }
@@ -576,6 +584,10 @@ flocal u32 ComponentType_name_to_bits(char* name)
 	{
 		return (u32)COMPONENT_TYPE_PLAYER_TONGUE;
 	}
+	if ( streq("COMPONENT_TYPE_CLICKABLE_GIZMO", name, strlen(name)) )
+	{
+		return (u32)COMPONENT_TYPE_CLICKABLE_GIZMO;
+	}
 }
 
 global_variable char* ComponentType_name_arr[] = 
@@ -606,7 +618,8 @@ global_variable char* ComponentType_name_arr[] =
 	"COMPONENT_TYPE_CLICKABLE_REFLECTION",
 	"COMPONENT_TYPE_SAVED_W_LEVEL",
 	"COMPONENT_TYPE_NOT_NULL",
-	"COMPONENT_TYPE_PLAYER_TONGUE"
+	"COMPONENT_TYPE_PLAYER_TONGUE",
+	"COMPONENT_TYPE_CLICKABLE_GIZMO"
 };
 
 global_variable u32 ComponentType_val_arr[] = 
@@ -637,7 +650,8 @@ global_variable u32 ComponentType_val_arr[] =
 	4194304,
 	8388608,
 	16777216,
-	33554432
+	33554432,
+	67108864
 };
 
-global_variable u32 ComponentType_field_count = 27;
+global_variable u32 ComponentType_field_count = 28;

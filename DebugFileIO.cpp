@@ -111,3 +111,21 @@ flocal std::vector<char> read_file(const std::string& filename)
 	return buffer;
 }
 #endif
+
+#include "dirent.h"
+flocal inline len_string* list_files_in_dir(char* path, u32* count)
+{
+    DIR* d = opendir(path);
+    std::vector<len_string> strings;
+    ASSERT(d, "Path does not exist");
+    dirent* dir;
+    while((dir = readdir(d)) != NULL)
+    {
+        strings.push_back(l_string(dir->d_name));
+    }
+    closedir(d);
+    len_string* out = (len_string*)malloc(sizeof(len_string) * strings.size());
+    memcpy(out, strings.data(), sizeof(len_string) * strings.size());
+    *count = strings.size();
+    return out;
+}

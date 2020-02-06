@@ -50,6 +50,8 @@ flocal uiv2 uint_vec(u32 a, u32 b)
     return {a,b};
 }
 
+#include <stdio.h>
+
 struct v2
 {
     
@@ -70,11 +72,19 @@ struct v2
             r32 u;
             r32 v;
         };
+        #if 1
         struct
         {
             r32 arr[2];
         };
+        #endif
     };
+    
+    inline v2 operator*=(const v2& b)
+    {
+        *this = {this->x * b.x, this->y * b.y};
+        return *this;
+    }
     inline v2 operator+=(const r32& b)
     {
         *this = {this->x + b, this->y + b};
@@ -96,6 +106,10 @@ struct v3
             r32 x;
             r32 y;
             r32 z;
+        };
+        struct
+        {
+            v2 xy;
         };
         struct
         {
@@ -168,6 +182,14 @@ struct v4
             r32 y;
             r32 z;
             r32 w;
+        };
+        struct
+        {
+            v2 xy;
+        };
+        struct
+        {
+            v3 xyz;
         };
         struct
         {
@@ -364,21 +386,6 @@ inline b32
 operator!=(const v2& a, const v2& b)
 {
     return !(a == b);
-}
-
-inline v3 xyz(const v4& a)
-{
-    return {a.x, a.y, a.z};
-}
-
-inline v2 xy(const v3& a)
-{
-    return {a.x, a.y};
-}
-
-inline v2 xy(const v4& a)
-{
-    return {a.x, a.y};
 }
 
 inline v2 v(r32 a, r32 b)

@@ -173,6 +173,28 @@ flocal inline u32 find_first_occurence_of_char(const len_string& str, char c)
     
 }
 
+flocal inline b32 cmp_len_string_ext(const len_string& str, char* ext, u32 ext_len)
+{
+    ASSERT(ext[0] != '.', "Extensions passed to cmp_len_string_ext() must not start w/ an \'.\'");
+    u32 begin = find_first_occurence_of_char(str, '.');
+    if (begin != -1)
+    {
+        int j = 0;
+        for (int i = begin+1;i < str.string_len && j < ext_len;i++)
+        {
+            if (ext[j] != str.str[i])
+            {
+                return false;
+            }
+            j++;
+        }
+    }
+    else
+    {
+        return false;   
+    }
+    return true;
+}
 
 #define LEN_STRING_H
 #endif
