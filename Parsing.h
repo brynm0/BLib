@@ -531,4 +531,30 @@ flocal b32 find_next_token(Tokenizer* tok, Token query)
     return ret_val;
 }
 
+flocal i32 update_brace_counter(Token t)
+{
+    if (t == token(TOKEN_BRACE_CLOSE, 1, "}"))
+    {
+        return 1;
+    }
+    if (t == token(TOKEN_BRACE_OPEN, 1, "{"))
+    {
+        return -1;
+    }
+    return 0;\
+}
+
+flocal b32 eat_to_next_whitespace(Tokenizer* tok)
+{
+    while(*tok->at && !isWhitespace(*tok->at))
+    {
+        tok->at++;
+    }
+    if (*tok->at)
+    {
+        return false;
+    }
+    return true;
+}
+
 #endif

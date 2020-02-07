@@ -160,6 +160,7 @@ flocal inline void sub_str_to_null_terminated(char* s, u32 length, char** out)
     
 }
 
+
 flocal inline u32 find_first_occurence_of_char(const len_string& str, char c)
 {
     LOOP(i, str.string_len)
@@ -170,6 +171,15 @@ flocal inline u32 find_first_occurence_of_char(const len_string& str, char c)
         }
     }
     return -1;
+    
+}
+
+flocal inline void strip_extension(len_string* str)
+{
+    
+    u32 ext_index = find_first_occurence_of_char(*str, '.');
+    str->str[ext_index] = 0;
+    str->string_len = ext_index;
     
 }
 
