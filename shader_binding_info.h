@@ -50,8 +50,6 @@ enum ShaderStage
     SHADER_STAGE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 };
 
-
-
 struct shader_binding_info
 {
     ShaderDescriptorType type;
@@ -59,6 +57,14 @@ struct shader_binding_info
     b32 is_push_constant;
     //if push constant, ignore binding
     uint32_t binding;
+};
+
+struct vertex_binding_info
+{
+    ShaderStage stage_flags;
+    u32 binding_index;
+    VkFormat vertex_format;
+    b32 is_shader_input;
 };
 
 #pragma pack(pop)
