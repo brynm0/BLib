@@ -83,7 +83,7 @@
 
 #ifdef ALIGN_MEMORY
 #define malloc(num) _aligned_malloc(num, 16)
-#define free(ptr) _aligned_fre(ptr)
+#define free(ptr) _aligned_free(ptr)
 #endif
 
 #if 0 
