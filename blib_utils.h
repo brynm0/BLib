@@ -33,6 +33,7 @@
 #define ASCII_START 32
 #define ASCII_END 127
 #define TEXT_SIZE_MIN 0.04f
+#define ANIM_FPS 24.0f
 
 #define STATIC_UI_TEXT_SIZE_MIN ((32.0f / 1080.0f) * 2.0f)//32 pixels @ 1080p https://youtu.be/fVFgSkZtCio
 #define TRANSIENT_UI_TEXT_SIZE_MIN ((46.0f / 1080.0f) * 2.0f)//46 pixels @ 1080p https://youtu.be/fVFgSkZtCio2
@@ -79,6 +80,11 @@
 #define LOOP(induction, end) for(u32 induction = 0; induction < end; induction++) 
 #define POOL(induction, initial) for(u32 induction = initial; induction >= 0; induction--)
 
+
+#ifdef ALIGN_MEMORY
+#define malloc(num) _aligned_malloc(num, 16)
+#define free(ptr) _aligned_fre(ptr)
+#endif
 
 #if 0 
 void* safe_realloc(void* src, size_t size, size_t original)
