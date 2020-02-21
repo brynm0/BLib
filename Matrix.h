@@ -11,6 +11,8 @@
 #include "VectorMath.h"
 #include <math.h>
 #include <stdio.h>
+#include "quaternion.h"
+
 struct m4
 {
     union
@@ -426,6 +428,67 @@ flocal inline m4 inverse(m4 m)
     return ret;
    
 }
+
+flocal inline v4 pre_multiply(m4 m, v4 v)
+{
+    return m * v;
+}
+
+flocal inline m4 pre_multiply(m4 m_a, m4 m_b)
+{
+    return m_a * m_b;
+}
+
+
+flocal inline m4 rotation_matrix(const quat& q)
+{
+    
+    m4 result = matrix(); //mat<3, 3, T, Q> Result(T(1));
+    r32 qxx = (q.x * q.x);
+    r32 qyy = (q.y * q.y);
+    r32 qzz = (q.z * q.z);
+    r32 qxz = (q.x * q.z);
+    r32 qxy = (q.x * q.y);
+    r32 qyz = (q.y * q.z);
+    r32 qwx = (q.w * q.x);
+    r32 qwy = (q.w * q.y);
+    r32 qwz = (q.w * q.z);
+
+    result.arr[0][0] = 1.f - 2.f * (qyy +  qzz);
+    result.arr[0][1] = 2.f * (qxy + qwz);
+    result.arr[0][2] = 2.f * (qxz - qwy);
+    result.arr[1][0] = 2.f * (qxy - qwz);
+    result.arr[1][1] = 1.f - 2.f * (qxx +  qzz);
+    result.arr[1][2] = 2.f * (qyz + qwx);
+    result.arr[2][0] = 2.f * (qxz + qwy);
+    result.arr[2][1] = 2.f * (qyz - qwx);
+    result.arr[2][2] = 1.f - 2.f * (qxx +  qyy);
+    return result;
+}
+
+flocal inline m4 translation_matrix(const v3& translation)
+{
+    m4 result = matrix();
+    result.arr[3][0] = translation.x;
+    result.arr[3][1] = translation.y;
+    result.arr[3][2] = translation.z;
+    return result;
+}
+
+flocal inline m4 scale_matrix(const v3& scale)
+{
+    m4 result = matrix();
+    result.arr[0][0] = scale.x;
+    result.arr[1][1] = scale.y;
+    result.arr[2][2] = scale.z;
+    return result;
+}
+
+flocal inline m4 transformation_matrix(const v3& translation, const quat& rotation, const v3& scale)
+{
+    return pre_multiply(translation_matrix(translation), pre_multiply(rotation_matrix(rotation), scale_matrix(scale)));
+}
+
 
 
 #define MATRIX_H
