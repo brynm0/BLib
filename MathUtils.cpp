@@ -99,12 +99,20 @@ clamp_r32(r32 a, r32 low, r32 high)
 	return math_max(low, math_min(a, high));
 }
 
+
 flocal inline r32
 mix(r32 x, r32 y, r32 a)
 {
     return  x * (1.0f - a) + y * a;
 }
 
+flocal inline v3 mix_vec(v3 a, v3 b, r32 val)
+{
+    return {mix(a.x, b.x, val),
+            mix(a.y, b.y, val),
+            mix(a.z, b.z, val)};
+}
+    
 flocal inline r32
 bilinear_mix(float c00,
              float c10,
@@ -205,14 +213,14 @@ int point_in_polygon(u32 nvert, v2* poly, v2 test)
     return c;
 }
 
-flocal u32 get_furthest_v_in_d(u32 num_pts, v2* pts, v2 dir)
+flocal inline u32 get_furthest_v_in_d(u32 num_pts, v2* pts, v2 dir_a)
 {
     r32 record_dot = -R32_MAX;
     u32 record_pt = -1;
-    dir = normalize(dir);
+    dir_a = normalize(dir_a);
     LOOP(i, num_pts)
     {
-        r32 new_dot = dot(dir,pts[i]);
+        r32 new_dot = dot(dir_a,pts[i]);
         if (new_dot > record_dot)
         {
             record_dot = new_dot;

@@ -19,10 +19,12 @@ flocal inline r32 fast_fabs(r32 x);
 flocal inline r32 sqLen(v3 vec);
 flocal inline r32 sqLen(v2 vec);
 flocal inline u32 ceiling(r32 num);
+flocal inline r32 mix(r32 a, r32 b, r32 t);
+
 
 flocal b32 is_inside_quad(v2 top_left, v2 bottom_right, v2 point);
 flocal inline void limit(v3* toLimit, const r32& limiter);
-flocal u32 get_furthest_v_in_d(u32 num_pts, v2* pts, v2 dir);
+flocal inline u32 get_furthest_v_in_d(u32 num_pts, v2* pts, v2 dir_a);
 
 #if 0
 flocal void limit (v3* toLimit, const r32& limiter)
