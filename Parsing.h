@@ -5,7 +5,6 @@ enum TokenType
 {
     TOKEN_UNKNOWN,
     TOKEN_COMMA,
-    //TODO distinguish between assignment and equivalence
     TOKEN_EQUALS,
     TOKEN_ASSIGNMENT,
     TOKEN_IDENTIFIER,
