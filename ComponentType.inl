@@ -350,6 +350,10 @@ flocal len_string print_enum_name_ComponentType(u32 field)
 	{
 		append_to_len_string(&s, "COMPONENT_TYPE_CLICKABLE_GIZMO\n");
 	}
+	if ( COMPONENT_TYPE_MESH_RENDER & field )
+	{
+		append_to_len_string(&s, "COMPONENT_TYPE_MESH_RENDER\n");
+	}
 	return s;
 }
 flocal len_string print_enum_name_ComponentType_using_equals(u32 field)
@@ -458,6 +462,10 @@ flocal len_string print_enum_name_ComponentType_using_equals(u32 field)
 	if ( COMPONENT_TYPE_CLICKABLE_GIZMO == field )
 	{
 		append_to_len_string(&s, "COMPONENT_TYPE_CLICKABLE_GIZMO");
+	}
+	if ( COMPONENT_TYPE_MESH_RENDER == field )
+	{
+		append_to_len_string(&s, "COMPONENT_TYPE_MESH_RENDER");
 	}
 	return s;
 }
@@ -568,6 +576,10 @@ flocal u32 ComponentType_name_to_bits(char* name)
 	{
 		return (u32)COMPONENT_TYPE_CLICKABLE_GIZMO;
 	}
+	if ( streq("COMPONENT_TYPE_MESH_RENDER", name, strlen(name)) )
+	{
+		return (u32)COMPONENT_TYPE_MESH_RENDER;
+	}
 	return -1;
 }
 
@@ -598,7 +610,8 @@ global_variable char* ComponentType_name_arr[] =
 	"COMPONENT_TYPE_SAVED_W_LEVEL",
 	"COMPONENT_TYPE_NOT_NULL",
 	"COMPONENT_TYPE_PLAYER_TONGUE",
-	"COMPONENT_TYPE_CLICKABLE_GIZMO"
+	"COMPONENT_TYPE_CLICKABLE_GIZMO",
+	"COMPONENT_TYPE_MESH_RENDER"
 };
 
 global_variable u32 ComponentType_val_arr[] = 
@@ -628,7 +641,8 @@ global_variable u32 ComponentType_val_arr[] =
 	2097152,
 	4194304,
 	8388608,
-	16777216
+	16777216,
+	33554432
 };
 
-global_variable u32 ComponentType_field_count = 26;
+global_variable u32 ComponentType_field_count = 27;

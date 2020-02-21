@@ -113,6 +113,7 @@ flocal std::vector<char> read_file(const std::string& filename)
 #endif
 
 #include "dirent.h"
+
 flocal inline len_string* list_files_in_dir(char* path, u32* count)
 {
     DIR* d = opendir(path);

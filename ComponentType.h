@@ -53,7 +53,8 @@ enum ComponentType
     COMPONENT_TYPE_SAVED_W_LEVEL = 1 << 21,
     COMPONENT_TYPE_NOT_NULL = 1 << 22,
     COMPONENT_TYPE_PLAYER_TONGUE = 1 << 23,
-    COMPONENT_TYPE_CLICKABLE_GIZMO = 1 << 24
+    COMPONENT_TYPE_CLICKABLE_GIZMO = 1 << 24,
+    COMPONENT_TYPE_MESH_RENDER = 1 << 25
 };
 #include <unordered_map>
 #include "ComponentType.inl"
